@@ -1,0 +1,24 @@
+<div class="row" ng-controller="chatController as chat">
+	<div class="col-sm-3"></div>
+	<div class="col-sm-6">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				Chat with me =)
+			</div>
+			<div id="chat-log-div" class="panel-body chat-log">
+				<div ng-repeat="line in chat.log track by $index">
+					{{ line }}
+				</div>
+			</div>
+			<div class="panel-footer">
+				<div class="input-group">
+					<input type="text" ng-model="chat.message" class="form-control" placeholder="say something ...">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button" ng-click="chat.onPost()">Post!</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3"></div>
+</div>

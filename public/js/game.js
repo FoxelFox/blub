@@ -1,3 +1,4 @@
+
 function Player() {
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
@@ -7,6 +8,7 @@ function Player() {
 	this.mesh = new THREE.Mesh(geometry, material);
 }
 
+var playerID;
 var players = {};
 
 
@@ -25,7 +27,7 @@ function Game() {
 		scene = new THREE.Scene();
 
 		var ar = window.innerWidth / window.innerHeight;
-		var camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
+		camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,12 +69,15 @@ function Game() {
 		};
 
 		render();
+
+		var gridHelper = new THREE.GridHelper( 200, 1 );
+		gridHelper.rotation.x = Math.PI / 2;
+		scene.add( gridHelper );
 	};
 
 	this.setSessionID = function(sessionID) {
-		//players[sessionID] = new Player();
-		//scene.add(players[sessionID].mesh);
-		//console.log(players[sessionID].mesh.position.x);
+		console.log("id is: "+sessionID);
+		playerID = sessionID;
 	};
 
 	this.onServerUpdate = function(updates) {
@@ -82,6 +87,10 @@ function Game() {
 			if (players[key]) {
 				players[key].mesh.position.x = updates[key].x;
 				players[key].mesh.position.y = updates[key].y;
+				if (key == playerID) {
+					this.camera.position.x = updates[key].x;
+					this.camera.position.y = updates[key].y;
+				}
 
 			} else {
 				players[key] = new Player();

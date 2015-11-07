@@ -62,7 +62,7 @@ class Controller {
 	createSockets(io) {
 		var self = this;
 		io.on('connection', function(socket) {
-			socket.emit('sessionID', socket.io);
+			socket.emit('sessionID', socket.id);
 
 			self.game.onPlayerConnected(socket.id);
 

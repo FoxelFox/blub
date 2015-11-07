@@ -1,7 +1,7 @@
-'use strict'
+'use strict';
 
 class Player {
-	constructor(x,y) {
+	constructor(x, y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -18,7 +18,7 @@ class Controller {
 		io.on('connection', function(socket) {
 			socket.emit('sessionID', socket.io);
 
-			players[socket.id] = new Player(0,0);
+			players[socket.id] = new Player(0, 0);
 
 			socket.on('disconnect', function() {
 				delete players[socket.id];

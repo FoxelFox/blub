@@ -34,28 +34,28 @@ function Game() {
 		up = false;
 		keyboardJS.bind('w', function(e) {
 			up = true;
-		}, function (e) {
+		}, function(e) {
 			up = false;
 		});
 
 		down = false;
 		keyboardJS.bind('s', function(e) {
 			down = true;
-		}, function (e) {
+		}, function(e) {
 			down = false;
 		});
 
 		left = false;
 		keyboardJS.bind('a', function(e) {
 			left = true;
-		}, function (e) {
+		}, function(e) {
 			left = false;
 		});
 
 		right = false;
 		keyboardJS.bind('d', function(e) {
 			right = true;
-		}, function (e) {
+		}, function(e) {
 			right = false;
 		});
 
@@ -67,7 +67,7 @@ function Game() {
 		render();
 	};
 
-	this.setSessionID = function (sessionID) {
+	this.setSessionID = function(sessionID) {
 		//players[sessionID] = new Player();
 		//scene.add(players[sessionID].mesh);
 		//console.log(players[sessionID].mesh.position.x);
@@ -76,7 +76,7 @@ function Game() {
 	this.onServerUpdate = function(updates) {
 
 
-		Object.keys(updates).forEach(function (key) {
+		Object.keys(updates).forEach(function(key) {
 			if (players[key]) {
 				players[key].mesh.position.x = updates[key].x;
 				players[key].mesh.position.y = updates[key].y;
@@ -93,10 +93,10 @@ function Game() {
 
 	this.getLocalPlayerUpdate = function() {
 		return {
-			up : up,
-			down : down,
-			left : left,
-			right : right
+			up: up,
+			down: down,
+			left: left,
+			right: right
 		};
 	};
 }

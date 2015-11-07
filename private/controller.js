@@ -56,7 +56,7 @@ class Game {
 				p2.vec2.add(player.body.force, player.body.force, force);
 			}
 		});
-		this.world.step(0.02);
+		this.world.step(0.05);
 	}
 
 	onPlayerUpdate(id, controls) {
@@ -99,7 +99,7 @@ class Controller {
 			});
 
 			socket.on('player:update', function(update) {
-				self.game.onPlayerUpdate(socket.id, update);
+				self.game.onPlayerUpdate(socket.id, JSON.parse(update));
 			});
 
 			setInterval(function() {
@@ -115,8 +115,8 @@ class Controller {
 				});
 
 
-				io.emit('server:update', update);
-			}, 20);
+				io.emit('server:update', JSON.stringify(update));
+			}, 50);
 		});
 	}
 }

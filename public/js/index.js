@@ -10,7 +10,7 @@ app.controller('indexController', function(socket) {
 	});
 
 	socket.on('server:update', function(res) {
-		game.onServerUpdate(res);
-		socket.emit('player:update', game.getLocalPlayerUpdate());
+		game.onServerUpdate(JSON.parse(res));
+		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
 });

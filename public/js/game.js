@@ -13,10 +13,12 @@ var players = {};
 function Game() {
 
 	var scene;
-	var up = false;
-	var down = false;
-	var left = false;
-	var right = false;
+	var controls = {
+		up: false,
+		down: false,
+		left: false,
+		right: false
+	};
 
 
 	this.init = function() {
@@ -31,32 +33,32 @@ function Game() {
 		document.getElementById('viewport').appendChild(renderer.domElement);
 		camera.position.z = 5;
 
-		up = false;
+		controls.up = false;
 		keyboardJS.bind('w', function(e) {
-			up = true;
+			controls.up = true;
 		}, function(e) {
-			up = false;
+			controls.up = false;
 		});
 
-		down = false;
+		controls.down = false;
 		keyboardJS.bind('s', function(e) {
-			down = true;
+			controls.down = true;
 		}, function(e) {
-			down = false;
+			controls.down = false;
 		});
 
-		left = false;
+		controls.left = false;
 		keyboardJS.bind('a', function(e) {
-			left = true;
+			controls.left = true;
 		}, function(e) {
-			left = false;
+			controls.left = false;
 		});
 
-		right = false;
+		controls.right = false;
 		keyboardJS.bind('d', function(e) {
-			right = true;
+			controls.right = true;
 		}, function(e) {
-			right = false;
+			controls.right = false;
 		});
 
 		var render = function() {
@@ -92,11 +94,6 @@ function Game() {
 	};
 
 	this.getLocalPlayerUpdate = function() {
-		return {
-			up: up,
-			down: down,
-			left: left,
-			right: right
-		};
+		return controls;
 	};
 }

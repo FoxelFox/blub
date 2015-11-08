@@ -3,7 +3,9 @@ var p2 = require('p2');
 var clone = require('clone');
 
 class Player {
-	constructor(x, y) {
+	constructor(sessionID, x, y) {
+
+		this.sessionID = sessionID;
 
 		this.controls = {
 			up: false,
@@ -28,9 +30,9 @@ class Player {
 class Game {
 
 	constructor() {
-		this.players = {};
+		this.players = [];
 		this.events = [];
-		this.bodies = {};
+		this.bodies = [];
 		this.world = new p2.World({
 			gravity: [0.0, 0.0]
 		});
@@ -38,24 +40,23 @@ class Game {
 
 	update() {
 		var self = this;
-		Object.keys(self.players).forEach((key) => {
-			var player = self.players[key];
+		self.players.forEach((player) => {
 			var force = 0.0;
 			if (player.controls.up) {
-				force = p2.vec2.fromValues(0.0, 10.0);
+				force = p2.vec2.fromValues(0.0, 25.0);
 				p2.vec2.add(player.body.force, player.body.force, force);
 
 			}
 			if (player.controls.down) {
-				force = p2.vec2.fromValues(0.0, -10.0);
+				force = p2.vec2.fromValues(0.0, -25.0);
 				p2.vec2.add(player.body.force, player.body.force, force);
 			}
 			if (player.controls.left) {
-				force = p2.vec2.fromValues(-10.0, 0.0);
+				force = p2.vec2.fromValues(-25.0, 0.0);
 				p2.vec2.add(player.body.force, player.body.force, force);
 			}
 			if (player.controls.right) {
-				force = p2.vec2.fromValues(+10.0, 0.0);
+				force = p2.vec2.fromValues(+25.0, 0.0);
 				p2.vec2.add(player.body.force, player.body.force, force);
 			}
 		});
@@ -63,30 +64,42 @@ class Game {
 	}
 
 	onPlayerUpdate(update) {
-		this.players[update.id].controls = update.controls;
+		var self = this;
+		self.players.forEach((player) => {
+			if (player.sessionID === update.sessionID) {
+				player.controls = update.controls;
+			}
+		});
 	}
 
-	onPlayerConnected() {
-		var player = new Player(0.0, 0.0);
+	onPlayerConnected(sessionID) {
+		var player = new Player(sessionID, 0.0, 0.0);
 		this.players[player.body.id] = player;
-		this.bodies[player.body.id] = clone(player.body);
+		this.bodies.push(clone(player.body));
 
 		this.events.push({
 			name: 'addBody',
-			body: this.bodies[player.body.id]
+			body: this.bodies.slice(-1)
 		});
 
 		this.world.addBody(player.body);
-		return player.body.id;
 	}
 
-	onPlayerDisconnected(id) {
-		this.world.removeBody(this.players[id].body);
-		delete this.bodies[id];
-		delete this.players[id];
-		this.events.push({
-			name: 'deleteBody',
-			id: id
+	onPlayerDisconnected(sessionID) {
+		var self = this;
+		this.players.forEach((player) => {
+			if (player.sessionID === sessionID) {
+
+				self.world.removeBody(player.body);
+
+				var index = this.bodies.indexOf(player.body);
+				this.bodies.splice(player.body, 1);
+				this.players.splice(player.body, 1);
+				this.events.push({
+					name: 'removeBody',
+					index: index
+				});
+			}
 		});
 	}
 }
@@ -104,10 +117,15 @@ class Controller {
 		io.on('connection', (socket) => {
 
 			// create player
-			var sessionID = self.game.onPlayerConnected(socket.id);
+			self.game.onPlayerConnected(socket.id);
 
 			// send players session id
-			socket.emit('sessionID', sessionID);
+			socket.emit('game:join', {
+				sessionID: socket.id,
+				bodyIndex: self.game.bodies.length - 1, // players bodyIndex in list
+				bodies: self.game.bodies
+
+			});
 
 			socket.on('disconnect', () => {
 				self.game.onPlayerDisconnected(socket.id);
@@ -120,31 +138,28 @@ class Controller {
 			socket.on('player:update', (update) => {
 				self.game.onPlayerUpdate(JSON.parse(update));
 			});
-
-			setInterval(() => {
-				self.game.update();
-
-				var update = {
-					bodies: {},
-					events: self.game.events
-				};
-				self.game.world.bodies.forEach((body) => {
-					update.bodies[body.id] = {
-						px: body.position[0],
-						py: body.position[1],
-						vx: body.velocity[0],
-						vy: body.velocity[1],
-						fx: body.force[0],
-						fy: body.force[1]
-					};
-				});
-
-				io.emit('server:update', JSON.stringify(update));
-
-				// clear events
-				self.game.events = [];
-			}, 50);
 		});
+
+		setInterval(() => {
+			self.game.update();
+
+			var update = {
+				bodies: [],
+				events: self.game.events
+			};
+			self.game.world.bodies.forEach((body) => {
+				update.bodies.push({
+					p: body.position,
+					v: body.velocity,
+					f: body.force
+				});
+			});
+
+			io.emit('server:update', JSON.stringify(update));
+
+			// clear events
+			self.game.events = [];
+		}, 50);
 	}
 }
 

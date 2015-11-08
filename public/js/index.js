@@ -5,12 +5,15 @@ window.onload = game.init;
 
 app.controller('indexController', function(socket) {
 
-	socket.on('sessionID', function(res) {
-		game.setSessionID(res);
+
+
+	socket.on('game:join', function(res) {
+		game.onGameJoin(res);
 	});
 
 	socket.on('server:update', function(res) {
 		game.onServerUpdate(JSON.parse(res));
 		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
+
 });

@@ -45,22 +45,37 @@ function Grid(width, height) {
 	this.mesh = new THREE.Mesh(geometry, material);
 }
 
-function Player() {
+function GameObject(body) {
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
 		color: 0x00ff00
 	});
 
 	this.mesh = new THREE.Mesh(geometry, material);
+
+	this.body = new p2.Body({
+		mass: body.mass,
+		position: body.position
+	});
+
+	this.body.addShape(new p2.Circle({
+		radius: 1
+	}));
 }
 
 var playerID;
-var players = {};
+var myPlayer;
+var gameObjects = [];
 
 
 function Game() {
 
 	var scene;
+
+	var world = new p2.World({
+		gravity: [0.0, 0.0]
+	});
+
 	var controls = {
 		up: false,
 		down: false,
@@ -109,8 +124,27 @@ function Game() {
 			controls.right = false;
 		});
 
+
+		var phcsics = function() {
+			world.step(0.0166666666667);
+			gameObjects.forEach(function(obj) {
+				if (obj.body.position) {
+					obj.mesh.position.x = obj.body.position[0];
+					obj.mesh.position.y = obj.body.position[1];
+				}
+			});
+
+			if (myPlayer) {
+				this.camera.position.x = myPlayer.body.position[0];
+				this.camera.position.y = myPlayer.body.position[1];
+			}
+		};
+
 		var render = function() {
+
+
 			requestAnimationFrame(render);
+			phcsics();
 			renderer.render(scene, camera);
 		};
 
@@ -121,36 +155,59 @@ function Game() {
 		scene.add(grid.mesh);
 	};
 
-	this.setSessionID = function(sessionID) {
-		console.log("id is: " + sessionID);
-		playerID = sessionID;
+	this.onGameJoin = function(res) {
+		playerID = res.sessionID;
+
+		// add all bodies from server
+		res.bodies.forEach(function(body) {
+			addGameObject(body);
+		});
+
+		myPlayer = gameObjects[res.bodyIndex];
 	};
 
 	this.onServerUpdate = function(updates) {
 
-		Object.keys(updates.bodies).forEach(function(key) {
-			if (players[key]) {
-				players[key].mesh.position.x = updates.bodies[key].px;
-				players[key].mesh.position.y = updates.bodies[key].py;
-				if (key == playerID) {
-					this.camera.position.x = updates.bodies[key].px;
-					this.camera.position.y = updates.bodies[key].py;
-				}
+		/*
+		updates.events.forEach(function(event) {
+			switch (event.name) {
+				case 'addBody':
+					addGameObject(event.body);
+					break;
+				case 'removeBody':
+					deleteGameObject(event.id);
+					break;
+				default:
 
-			} else {
-				players[key] = new Player();
-				players[key].mesh.position.x = updates.bodies[key].px;
-				players[key].mesh.position.y = updates.bodies[key].py;
-				scene.add(players[key].mesh);
 			}
+		})
+		*/
+		;
 
+		updates.bodies.forEach(function(body, i) {
+			gameObjects[i].body.position = body.p;
+			gameObjects[i].body.velocity = body.v;
+			gameObjects[i].body.force = body.f;
 		});
 	};
 
 	this.getLocalPlayerUpdate = function() {
 		return {
-			id: playerID,
+			sessionID: playerID,
 			controls: controls
 		};
 	};
+
+	function addGameObject(body) {
+		var obj = new GameObject(body);
+		gameObjects.push(obj);
+		world.addBody(obj.body);
+		scene.add(obj.mesh);
+	}
+
+	function deleteGameObject(id) {
+		world.removeBody(gameObjects[id]);
+		// todo scene remove
+		delete gameObjects[id];
+	}
 }

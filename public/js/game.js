@@ -1,4 +1,3 @@
-
 function Grid(width, height) {
 	var geometry = new THREE.Geometry();
 
@@ -8,30 +7,30 @@ function Grid(width, height) {
 		}
 	}
 
-	for (var rowY = 0; rowY < height-1; rowY++) {
-		for (var rowX = 0; rowX < width-1; rowX++) {
+	for (var rowY = 0; rowY < height - 1; rowY++) {
+		for (var rowX = 0; rowX < width - 1; rowX++) {
 			var v0 = rowY * width + rowX;
 			var v1 = v0 + width + 1;
 			var v2 = v0 + width;
-			geometry.faces.push( new THREE.Face3(v0, v1, v2));
-			geometry.faceVertexUvs[ 0 ].push(
-			    [
-			        new THREE.Vector2( 0, 0 ),
-			        new THREE.Vector2( 1, 1 ),
-			        new THREE.Vector2( 0, 1 ),
-			    ]
+			geometry.faces.push(new THREE.Face3(v0, v1, v2));
+			geometry.faceVertexUvs[0].push(
+				[
+					new THREE.Vector2(0, 0),
+					new THREE.Vector2(1, 1),
+					new THREE.Vector2(0, 1),
+				]
 			);
 
 			v1 = v0 + 1;
 			v2 = v0 + width + 1;
-			geometry.faces.push( new THREE.Face3(v0, v1, v2));
+			geometry.faces.push(new THREE.Face3(v0, v1, v2));
 
-			geometry.faceVertexUvs[ 0 ].push(
-			    [
-			        new THREE.Vector2( 0, 0 ),
-			        new THREE.Vector2( 1, 0 ),
-			        new THREE.Vector2( 1, 1 ),
-			    ]
+			geometry.faceVertexUvs[0].push(
+				[
+					new THREE.Vector2(0, 0),
+					new THREE.Vector2(1, 0),
+					new THREE.Vector2(1, 1),
+				]
 			);
 		}
 	}
@@ -40,8 +39,10 @@ function Grid(width, height) {
 
 	var loader = new THREE.TextureLoader();
 	var tex = loader.load('img/grid.png');
-	var material = new THREE.MeshBasicMaterial( {map: tex} );
-	this.mesh = new THREE.Mesh( geometry, material );
+	var material = new THREE.MeshBasicMaterial({
+		map: tex
+	});
+	this.mesh = new THREE.Mesh(geometry, material);
 }
 
 function Player() {
@@ -121,26 +122,25 @@ function Game() {
 	};
 
 	this.setSessionID = function(sessionID) {
-		console.log("id is: "+sessionID);
+		console.log("id is: " + sessionID);
 		playerID = sessionID;
 	};
 
 	this.onServerUpdate = function(updates) {
 
-
-		Object.keys(updates).forEach(function(key) {
+		Object.keys(updates.bodies).forEach(function(key) {
 			if (players[key]) {
-				players[key].mesh.position.x = updates[key].x;
-				players[key].mesh.position.y = updates[key].y;
+				players[key].mesh.position.x = updates.bodies[key].px;
+				players[key].mesh.position.y = updates.bodies[key].py;
 				if (key == playerID) {
-					this.camera.position.x = updates[key].x;
-					this.camera.position.y = updates[key].y;
+					this.camera.position.x = updates.bodies[key].px;
+					this.camera.position.y = updates.bodies[key].py;
 				}
 
 			} else {
 				players[key] = new Player();
-				players[key].mesh.position.x = updates[key].x;
-				players[key].mesh.position.y = updates[key].y;
+				players[key].mesh.position.x = updates.bodies[key].px;
+				players[key].mesh.position.y = updates.bodies[key].py;
 				scene.add(players[key].mesh);
 			}
 
@@ -148,6 +148,9 @@ function Game() {
 	};
 
 	this.getLocalPlayerUpdate = function() {
-		return controls;
+		return {
+			id: playerID,
+			controls: controls
+		};
 	};
 }

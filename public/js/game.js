@@ -1,4 +1,49 @@
 
+function Grid(width, height) {
+	var geometry = new THREE.Geometry();
+
+	for (var y = 0; y < height; y++) {
+		for (var x = 0; x < width; x++) {
+			geometry.vertices.push(new THREE.Vector3(x, y, 0));
+		}
+	}
+
+	for (var rowY = 0; rowY < height-1; rowY++) {
+		for (var rowX = 0; rowX < width-1; rowX++) {
+			var v0 = rowY * width + rowX;
+			var v1 = v0 + width + 1;
+			var v2 = v0 + width;
+			geometry.faces.push( new THREE.Face3(v0, v1, v2));
+			geometry.faceVertexUvs[ 0 ].push(
+			    [
+			        new THREE.Vector2( 0, 0 ),
+			        new THREE.Vector2( 1, 1 ),
+			        new THREE.Vector2( 0, 1 ),
+			    ]
+			);
+
+			v1 = v0 + 1;
+			v2 = v0 + width + 1;
+			geometry.faces.push( new THREE.Face3(v0, v1, v2));
+
+			geometry.faceVertexUvs[ 0 ].push(
+			    [
+			        new THREE.Vector2( 0, 0 ),
+			        new THREE.Vector2( 1, 0 ),
+			        new THREE.Vector2( 1, 1 ),
+			    ]
+			);
+		}
+	}
+
+	geometry.computeBoundingSphere();
+
+	var loader = new THREE.TextureLoader();
+	var tex = loader.load('img/grid.png');
+	var material = new THREE.MeshBasicMaterial( {map: tex} );
+	this.mesh = new THREE.Mesh( geometry, material );
+}
+
 function Player() {
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
@@ -70,9 +115,9 @@ function Game() {
 
 		render();
 
-		var gridHelper = new THREE.GridHelper( 200, 1 );
-		gridHelper.rotation.x = Math.PI / 2;
-		scene.add( gridHelper );
+		var grid = new Grid(50, 50);
+		//grid.mesh.rotation.x = Math.PI * 0.5;
+		scene.add(grid.mesh);
 	};
 
 	this.setSessionID = function(sessionID) {

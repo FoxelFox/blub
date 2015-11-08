@@ -85,24 +85,24 @@ class Controller {
 
 	createSockets(io) {
 		var self = this;
-		io.on('connection', function(socket) {
+		io.on('connection', (socket) => {
 			socket.emit('sessionID', socket.id);
 
 			self.game.onPlayerConnected(socket.id);
 
-			socket.on('disconnect', function() {
+			socket.on('disconnect', () => {
 				self.game.onPlayerDisconnected(socket.id);
 			});
 
-			socket.on('chat message', function(msg) {
+			socket.on('chat message', (msg) => {
 				io.emit('chat log', msg);
 			});
 
-			socket.on('player:update', function(update) {
+			socket.on('player:update', (update) => {
 				self.game.onPlayerUpdate(socket.id, JSON.parse(update));
 			});
 
-			setInterval(function() {
+			setInterval(() => {
 				self.game.update();
 
 				var update = {};

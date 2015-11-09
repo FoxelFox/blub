@@ -46,10 +46,13 @@ function Grid(width, height) {
 }
 
 function GameObject(body) {
+
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
 		color: 0x00ff00
 	});
+
+	this.id = body.id;
 
 	this.mesh = new THREE.Mesh(geometry, material);
 
@@ -63,7 +66,7 @@ function GameObject(body) {
 	}));
 }
 
-var playerID;
+var sessionID;
 var myPlayer;
 var gameObjects = [];
 
@@ -156,19 +159,25 @@ function Game() {
 	};
 
 	this.onGameJoin = function(res) {
-		playerID = res.sessionID;
+		sessionID = res.sessionID;
 
 		// add all bodies from server
 		res.bodies.forEach(function(body) {
 			addGameObject(body);
 		});
+	};
 
-		myPlayer = gameObjects[res.bodyIndex];
+	this.onSpawn = function(serverBodyID) {
+		gameObjects.forEach(function(obj) {
+			if (obj.id === serverBodyID) {
+				myPlayer = obj;
+			}
+		});
 	};
 
 	this.onServerUpdate = function(updates) {
 
-		/*
+
 		updates.events.forEach(function(event) {
 			switch (event.name) {
 				case 'addBody':
@@ -180,9 +189,7 @@ function Game() {
 				default:
 
 			}
-		})
-		*/
-		;
+		});
 
 		updates.bodies.forEach(function(body, i) {
 			gameObjects[i].body.position = body.p;
@@ -193,12 +200,20 @@ function Game() {
 
 	this.getLocalPlayerUpdate = function() {
 		return {
-			sessionID: playerID,
+			sessionID: sessionID,
 			controls: controls
 		};
 	};
 
 	function addGameObject(body) {
+
+		// duplicate check
+		gameObjects.forEach(function(o) {
+			if (o.id === body.id) {
+				return;
+			}
+		});
+
 		var obj = new GameObject(body);
 		gameObjects.push(obj);
 		world.addBody(obj.body);

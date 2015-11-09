@@ -32,6 +32,7 @@ class Game {
 	constructor() {
 		this.players = [];
 		this.events = [];
+		this.sessionEvents = [];
 		this.bodies = [];
 		this.world = new p2.World({
 			gravity: [0.0, 0.0]
@@ -65,6 +66,7 @@ class Game {
 
 	onPlayerUpdate(update) {
 		var self = this;
+
 		self.players.forEach((player) => {
 			if (player.sessionID === update.sessionID) {
 				player.controls = update.controls;
@@ -72,17 +74,23 @@ class Game {
 		});
 	}
 
-	onPlayerConnected(sessionID) {
-		var player = new Player(sessionID, 0.0, 0.0);
+	onPlayerConnected(socket) {
+		var player = new Player(socket.id, 0.0, 0.0);
 		this.players[player.body.id] = player;
-		this.bodies.push(clone(player.body));
+		var cloned = clone(player.body);
+		this.bodies.push(cloned);
+		this.world.addBody(player.body);
 
 		this.events.push({
 			name: 'addBody',
-			body: this.bodies.slice(-1)
+			body: cloned,
 		});
 
-		this.world.addBody(player.body);
+		this.sessionEvents.push({
+			name: 'spawn',
+			socket: socket,
+			playerBodyID: player.body.id
+		});
 	}
 
 	onPlayerDisconnected(sessionID) {
@@ -116,16 +124,18 @@ class Controller {
 		var self = this;
 		io.on('connection', (socket) => {
 
-			// create player
-			self.game.onPlayerConnected(socket.id);
+
 
 			// send players session id
 			socket.emit('game:join', {
 				sessionID: socket.id,
-				bodyIndex: self.game.bodies.length - 1, // players bodyIndex in list
+				bodyIndex: self.game.bodies.length, // players bodyIndex in list
 				bodies: self.game.bodies
 
 			});
+
+			// create player
+			self.game.onPlayerConnected(socket);
 
 			socket.on('disconnect', () => {
 				self.game.onPlayerDisconnected(socket.id);
@@ -159,6 +169,11 @@ class Controller {
 
 			// clear events
 			self.game.events = [];
+
+			self.game.sessionEvents.forEach((sEvent) => {
+				sEvent.socket.emit('game:spawn', sEvent.playerBodyID);
+			});
+			self.game.sessionEvents = [];
 		}, 50);
 	}
 }

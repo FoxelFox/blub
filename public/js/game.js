@@ -34,7 +34,8 @@ function GameObject(body) {
 
 	this.body = new p2.Body({
 		mass: body.mass,
-		position: body.position
+		position: body.position,
+		damping: body.damping
 	});
 
 	this.body.addShape(new p2.Circle({

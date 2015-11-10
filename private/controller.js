@@ -2,6 +2,18 @@
 var p2 = require('p2');
 var clone = require('clone');
 
+class Generator {
+	constructor() {
+		this.counter = 0;
+	}
+
+	getID() {
+		return ++this.counter;
+	}
+}
+
+const generator = new Generator();
+
 class Player {
 	constructor(sessionID, x, y) {
 
@@ -41,6 +53,30 @@ class Playfield {
 		this.borderBody.addShape(new p2.Plane(), [-height / 2, 0], -Math.PI / 2);
 		this.clone = clone(this.borderBody);
 		world.addBody(this.borderBody);
+	}
+}
+
+class GameObject {
+	constructor(options) {
+		this.id = generator.getID();
+		this.body = options.body;
+		this.color = options.color || 0xffffff;
+		this.texture = options.texture || null;
+	}
+
+	toNet() {
+		return {
+			id: this.id,
+			color: this.color,
+			texture: this.texture,
+			body: {
+				position: this.body.position,
+				velocity: this.body.velocity,
+				force: this.body.force,
+				mass: this.body.mass,
+				shapes: this.body.shapes
+			}
+		};
 	}
 }
 

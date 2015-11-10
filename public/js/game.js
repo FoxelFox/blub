@@ -1,55 +1,31 @@
-function Grid(width, height) {
-	var geometry = new THREE.Geometry();
-
-	for (var y = 0; y < height; y++) {
-		for (var x = 0; x < width; x++) {
-			geometry.vertices.push(new THREE.Vector3(x, y, 0));
-		}
-	}
-
-	for (var rowY = 0; rowY < height - 1; rowY++) {
-		for (var rowX = 0; rowX < width - 1; rowX++) {
-			var v0 = rowY * width + rowX;
-			var v1 = v0 + width + 1;
-			var v2 = v0 + width;
-			geometry.faces.push(new THREE.Face3(v0, v1, v2));
-			geometry.faceVertexUvs[0].push(
-				[
-					new THREE.Vector2(0, 0),
-					new THREE.Vector2(1, 1),
-					new THREE.Vector2(0, 1),
-				]
-			);
-
-			v1 = v0 + 1;
-			v2 = v0 + width + 1;
-			geometry.faces.push(new THREE.Face3(v0, v1, v2));
-
-			geometry.faceVertexUvs[0].push(
-				[
-					new THREE.Vector2(0, 0),
-					new THREE.Vector2(1, 0),
-					new THREE.Vector2(1, 1),
-				]
-			);
-		}
-	}
-
-	geometry.computeBoundingSphere();
-
+function Grid(world, width, height) {
 	var loader = new THREE.TextureLoader();
-	var tex = loader.load('img/grid.png');
+
+	// PLAYFIELD
+	var geometry = new THREE.PlaneGeometry(width, height);
+	var gridTex = loader.load('img/grid.png');
+	gridTex.wrapS = THREE.RepeatWrapping;
+	gridTex.wrapT = THREE.RepeatWrapping;
+	gridTex.repeat.set( width, height );
 	var material = new THREE.MeshBasicMaterial({
-		map: tex
+		map: gridTex
 	});
-	this.mesh = new THREE.Mesh(geometry, material);
+	this.meshPlayField = new THREE.Mesh(geometry, material);
+
+	// Borders
+	this.borderBody = new p2.Body({ mass: 0});
+	this.borderBody.addShape(new p2.Plane(), [0, height / 2], Math.PI);
+	this.borderBody.addShape(new p2.Plane(), [0, -height / 2], 0);
+	this.borderBody.addShape(new p2.Plane(), [height / 2, 0], Math.PI / 2);
+	this.borderBody.addShape(new p2.Plane(), [-height / 2, 0], -Math.PI / 2);
+	world.addBody(this.borderBody);
 }
 
 function GameObject(body) {
 
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
-		color: 0x00ff00
+		color: 0x00ff00ddddddddd
 	});
 
 	this.id = body.id;
@@ -153,9 +129,9 @@ function Game() {
 
 		render();
 
-		var grid = new Grid(50, 50);
+		var grid = new Grid(world, 50, 50);
 		//grid.mesh.rotation.x = Math.PI * 0.5;
-		scene.add(grid.mesh);
+		scene.add(grid.meshPlayField);
 	};
 
 	this.onGameJoin = function(res) {

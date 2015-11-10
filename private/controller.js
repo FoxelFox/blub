@@ -27,6 +27,22 @@ class Player {
 	}
 }
 
+class Playfield {
+	constructor(world, width, height) {
+		this.width = width;
+		this.height = height;
+
+		// Borders
+		this.borderBody = new p2.Body({ mass: 0});
+		this.borderBody.addShape(new p2.Plane(), [0, height / 2], Math.PI);
+		this.borderBody.addShape(new p2.Plane(), [0, -height / 2], 0);
+		this.borderBody.addShape(new p2.Plane(), [height / 2, 0], Math.PI / 2);
+		this.borderBody.addShape(new p2.Plane(), [-height / 2, 0], -Math.PI / 2);
+		this.clone = clone(this.borderBody);
+		world.addBody(this.borderBody);
+	}
+}
+
 class Game {
 
 	constructor() {
@@ -37,6 +53,9 @@ class Game {
 		this.world = new p2.World({
 			gravity: [0.0, 0.0]
 		});
+
+		var level = new Playfield(this.world, 50, 50);
+		this.bodies.push(level.clone);
 	}
 
 	update() {

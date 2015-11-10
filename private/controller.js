@@ -16,7 +16,8 @@ class Player {
 
 		this.body = new p2.Body({
 			mass: 5,
-			position: [x, y]
+			position: [x, y],
+			damping: 0.99
 		});
 
 		var shape = new p2.Circle({
@@ -42,24 +43,23 @@ class Game {
 	update() {
 		var self = this;
 		self.players.forEach((player) => {
-			var force = 0.0;
+			var force = p2.vec2.fromValues(0, 0);
 			if (player.controls.up) {
-				force = p2.vec2.fromValues(0.0, 25.0);
-				p2.vec2.add(player.body.force, player.body.force, force);
-
+				p2.vec2.add(force, force, p2.vec2.fromValues(0, +1));
 			}
 			if (player.controls.down) {
-				force = p2.vec2.fromValues(0.0, -25.0);
-				p2.vec2.add(player.body.force, player.body.force, force);
+				p2.vec2.add(force, force, p2.vec2.fromValues(0, -1));
 			}
 			if (player.controls.left) {
-				force = p2.vec2.fromValues(-25.0, 0.0);
-				p2.vec2.add(player.body.force, player.body.force, force);
+				p2.vec2.add(force, force, p2.vec2.fromValues(-1, 0));
 			}
 			if (player.controls.right) {
-				force = p2.vec2.fromValues(+25.0, 0.0);
-				p2.vec2.add(player.body.force, player.body.force, force);
+				p2.vec2.add(force, force, p2.vec2.fromValues(+1, 0));
 			}
+			p2.vec2.normalize(force, force);
+			p2.vec2.multiply(force, force, p2.vec2.fromValues(+200, +200));
+
+			p2.vec2.add(player.body.force, player.body.force, force);
 		});
 		this.world.step(0.05);
 	}
@@ -123,8 +123,6 @@ class Controller {
 	createSockets(io) {
 		var self = this;
 		io.on('connection', (socket) => {
-
-
 
 			// send players session id
 			socket.emit('game:join', {

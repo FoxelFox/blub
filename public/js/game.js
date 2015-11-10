@@ -6,14 +6,16 @@ function Grid(world, width, height) {
 	var gridTex = loader.load('img/grid.png');
 	gridTex.wrapS = THREE.RepeatWrapping;
 	gridTex.wrapT = THREE.RepeatWrapping;
-	gridTex.repeat.set( width, height );
+	gridTex.repeat.set(width, height);
 	var material = new THREE.MeshBasicMaterial({
 		map: gridTex
 	});
 	this.meshPlayField = new THREE.Mesh(geometry, material);
 
 	// Borders
-	this.borderBody = new p2.Body({ mass: 0});
+	this.borderBody = new p2.Body({
+		mass: 0
+	});
 	this.borderBody.addShape(new p2.Plane(), [0, height / 2], Math.PI);
 	this.borderBody.addShape(new p2.Plane(), [0, -height / 2], 0);
 	this.borderBody.addShape(new p2.Plane(), [height / 2, 0], Math.PI / 2);
@@ -25,7 +27,7 @@ function GameObject(body) {
 
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
-		color: 0x00ff00ddddddddd
+		color: 0x00ff00
 	});
 
 	this.id = body.id;

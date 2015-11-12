@@ -46,7 +46,9 @@ class Playfield {
 		this.height = height;
 
 		// Borders
-		this.borderBody = new p2.Body({ mass: 0});
+		this.borderBody = new p2.Body({
+			mass: 0
+		});
 		this.borderBody.addShape(new p2.Plane(), [0, height / 2], Math.PI);
 		this.borderBody.addShape(new p2.Plane(), [0, -height / 2], 0);
 		this.borderBody.addShape(new p2.Plane(), [height / 2, 0], Math.PI / 2);
@@ -65,6 +67,28 @@ class GameObject {
 	}
 
 	toNet() {
+
+		function shapesToNet(shapes) {
+			var netShapes = [];
+			shapes.forEach((shape) => {
+				var netShape = {};
+				netShape.type = shape.constructor.name;
+				netShape.angle = shape.angle;
+				netShape.position = shape.position;
+				switch (shape.constructor.name) {
+					case 'Circle':
+						netShape.radius = shape.radius;
+						break;
+					case 'Box':
+						netShape.width = shape.width;
+						netShape.height = shape.height;
+						break;
+				}
+				netShapes.push(netShape);
+			});
+			return netShapes;
+		}
+
 		return {
 			id: this.id,
 			color: this.color,
@@ -74,7 +98,7 @@ class GameObject {
 				velocity: this.body.velocity,
 				force: this.body.force,
 				mass: this.body.mass,
-				shapes: this.body.shapes
+				shapes: shapesToNet(this.body.shapes)
 			}
 		};
 	}

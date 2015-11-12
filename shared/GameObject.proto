@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+message Go {
+    required uint32 id = 1;
+    optional Color color = 2;
+	optional string texture = 3;
+	optional Body body = 4;
+}
+
+
+message Body {
+	optional Vector2 position = 1;
+	optional Vector2 velocity = 2;
+	optional Vector2 force = 3;
+	optional float mass = 3;
+}
+
+message Color {
+	required uint32 r = 1;
+	required uint32 g = 2;
+	required uint32 b = 3;
+	optional uint32 a = 4;
+}
+
+message Vector3 {
+	required float x = 1;
+	required float y = 2;
+	required float y = 3;
+}
+
+message Vector2 {
+	required float x = 1;
+	required float y = 2;
+}
+
+message ShapeBox {
+
+}
+
+enum EnumNotAllowingAlias {
+
+}
+
+message Orientation {
+	required Vector2 position = 1;
+	required float angle = 2;
+}

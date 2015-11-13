@@ -46,12 +46,12 @@ function GameObject(body) {
 }
 
 var sessionID;
-var myPlayer;
+var localPlayerID;
 var gameObjects = [];
 
 
 function Game() {
-
+	var game = this;
 	var scene;
 
 	var world = new p2.World({
@@ -65,12 +65,13 @@ function Game() {
 		right: false
 	};
 
+	this.serverUpdateMessage = null;
 
 	this.init = function() {
 		scene = new THREE.Scene();
 
 		var ar = window.innerWidth / window.innerHeight;
-		camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
+		var camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -107,26 +108,35 @@ function Game() {
 		});
 
 
-		var phcsics = function() {
-			world.step(0.0166666666667);
+		var physics = function() {
+
+			if (game.serverUpdateMessage) {
+				// server has physics update and more
+				game.onServerUpdate(game.serverUpdateMessage);
+				game.serverUpdateMessage = null;
+			} else {
+				// local physics update
+				world.step(0.0166666666667);
+			}
+
 			gameObjects.forEach(function(obj) {
 				if (obj.body.position) {
 					obj.mesh.position.x = obj.body.position[0];
 					obj.mesh.position.y = obj.body.position[1];
 				}
-			});
 
-			if (myPlayer) {
-				this.camera.position.x = myPlayer.body.position[0];
-				this.camera.position.y = myPlayer.body.position[1];
-			}
+				if (localPlayerID === obj.id) {
+					camera.position.x = obj.body.position[0];
+					camera.position.y = obj.body.position[1];
+				}
+			});
 		};
 
 		var render = function() {
 
 
 			requestAnimationFrame(render);
-			phcsics();
+			physics();
 			renderer.render(scene, camera);
 		};
 
@@ -146,12 +156,8 @@ function Game() {
 		});
 	};
 
-	this.onSpawn = function(serverBodyID) {
-		gameObjects.forEach(function(obj) {
-			if (obj.id === serverBodyID) {
-				myPlayer = obj;
-			}
-		});
+	this.onSpawn = function(playerID) {
+		localPlayerID = playerID;
 	};
 
 	this.onServerUpdate = function(updates) {

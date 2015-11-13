@@ -16,7 +16,7 @@ app.controller('indexController', function(socket) {
 	});
 
 	socket.on('server:update', function(res) {
-		game.onServerUpdate(JSON.parse(res));
+		game.serverUpdateMessage = JSON.parse(res);
 		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
 

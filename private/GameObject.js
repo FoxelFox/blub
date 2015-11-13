@@ -27,7 +27,11 @@ class GameObject {
 	}
 
 	toNet() {
-		//TODO:
+		if (!this.isDirty) return {};
+		return {
+			"id" : this.id
+			//"component" :
+		};
 	}
 
 	addComponent(component) {
@@ -88,7 +92,7 @@ class Component {
 	}
 
 	setDirty() {
-
+		this.gameObject.isDirty = this.isDirty = true;
 	}
 
 	onAdded() {}
@@ -109,7 +113,7 @@ class ColorComp extends Component {
 
 	set color(color) {
 		this._color = color;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 }
 
@@ -135,7 +139,7 @@ class BodyComp extends Component {
 	}
 
 	update() {
-		this.gameObject.isDirty = this.isDirty = (this.body.sleepState !== p2.Body.SLEEPING);
+		if (this.body.sleepState !== p2.Body.SLEEPING) super.setDirty();
 	}
 }
 
@@ -154,7 +158,7 @@ class ShapeComp extends Component {
 	set offset(offset) {
 		this._offset = offset;
 		this.shape.position = offset;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 
 	get angle() {
@@ -164,7 +168,7 @@ class ShapeComp extends Component {
 	set angle(angle) {
 		this._angle = angle;
 		this.shape.angle = angle;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 
 	onAdded() {
@@ -193,7 +197,7 @@ class CircleShapeComp extends ShapeComp {
 	set radius(radius) {
 		this._radius = radius;
 		this.shape.radius = radius;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 }
 
@@ -213,7 +217,7 @@ class CapsuleShapeComp extends ShapeComp {
 	set radius(radius) {
 		this._radius = radius;
 		this.shape.radius = radius;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 
 	get length() {
@@ -223,7 +227,7 @@ class CapsuleShapeComp extends ShapeComp {
 	set length(length) {
 		this._length = length;
 		this.shape.length = length;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 }
 
@@ -242,7 +246,7 @@ class BoxShapeComp extends ShapeComp {
 	set width(width) {
 		this._width = width;
 		this.shape.width = width;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 
 	get height() {
@@ -252,7 +256,7 @@ class BoxShapeComp extends ShapeComp {
 	set height(height) {
 		this._height = height;
 		this.shape.height = height;
-		this.gameObject.isDirty = this.isDirty = true;
+		super.setDirty();
 	}
 }
 

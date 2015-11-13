@@ -28,9 +28,14 @@ class GameObject {
 
 	toNet() {
 		if (!this.isDirty) return {};
+		var self = this;
+		var netComponents = [];
+		this.components.forEach( (comp) =>) {
+			if (comp.isDirty()) netComponents.push(comp.toNet());
+		}
 		return {
-			"id" : this.id
-			//"component" :
+			"id" : this.id,
+			"components" : netComponents
 		};
 	}
 
@@ -97,8 +102,11 @@ class Component {
 
 	onAdded() {}
 	onRemoved() {}
-
 	update() {}
+
+	toNet() {
+		return { type : this.type };
+	}
 }
 
 class ColorComp extends Component {
@@ -114,6 +122,12 @@ class ColorComp extends Component {
 	set color(color) {
 		this._color = color;
 		super.setDirty();
+	}
+
+	toNet() {
+		var net = super.toNet();
+		net.color = this.color;
+		return net;
 	}
 }
 
@@ -140,6 +154,11 @@ class BodyComp extends Component {
 
 	update() {
 		if (this.body.sleepState !== p2.Body.SLEEPING) super.setDirty();
+	}
+
+	toNet() {
+		var net = super.toNet();
+
 	}
 }
 

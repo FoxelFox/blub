@@ -4,14 +4,14 @@ var proto = require('protobufjs');
 
 class GameObject {
 
-	static getID(){
-	    if (!this.lastID && this.lastID!==0) {
-	      this.lastID=0;
-	    } else {
-	      this.lastID++;
-	    }
-	    return this.lastID;
-  	}
+	static getID() {
+		if (!this.lastID && this.lastID !== 0) {
+			this.lastID = 0;
+		} else {
+			this.lastID++;
+		}
+		return this.lastID;
+	}
 
 	constructor(components) {
 		this.id = GameObject.getID();
@@ -30,12 +30,23 @@ class GameObject {
 		if (!this.isDirty) return {};
 		var self = this;
 		var netComponents = [];
-		this.components.forEach( (comp) => {
+		this.components.forEach((comp) => {
 			if (comp.isDirty()) netComponents.push(comp.toNet());
 		});
 		return {
-			"id" : this.id,
-			"components" : netComponents
+			"id": this.id,
+			"components": netComponents
+		};
+	}
+
+	toNetAll() {
+		var netComponents = [];
+		this.components.forEach((comp) => {
+			netComponents.push(comp.toNet());
+		});
+		return {
+			"id": this.id,
+			"components": netComponents
 		};
 	}
 
@@ -105,7 +116,9 @@ class Component {
 	update() {}
 
 	toNet() {
-		return { type : this.type };
+		return {
+			type: this.type
+		};
 	}
 }
 
@@ -199,18 +212,13 @@ class ShapeComp extends Component {
 		var body = this.gameObject.getComponent("body");
 		if (body) body.body.removeShape(this.shape);
 	}
-
-	toNet() {
-		var net = super.toNet();
-		net.offset = this._offset;
-		net.angle = this._angle;
-		return net;
-	}
 }
 
 class CircleShapeComp extends ShapeComp {
 	constructor(radius, offset, angle) {
-		var shape = new p2.Circle({radius: radius});
+		var shape = new p2.Circle({
+			radius: radius
+		});
 		super(shape, offset, angle);
 		this.shape = shape;
 		this._radius = radius;
@@ -225,20 +233,14 @@ class CircleShapeComp extends ShapeComp {
 		this.shape.radius = radius;
 		super.setDirty();
 	}
-
-	toNet() {
-		var net = super.toNet();
-		net.shapeType = "circle";
-		net.radius = this._radius;
-		return net;
-	}
-
-
 }
 
 class CapsuleShapeComp extends ShapeComp {
 	constructor(radius, length, offset, angle) {
-		var shape = new p2.Capsule({radius: radius, length: length});
+		var shape = new p2.Capsule({
+			radius: radius,
+			length: length
+		});
 		super(shape, offset, angle);
 		this.shape = shape;
 		this._radius = radius;
@@ -264,19 +266,14 @@ class CapsuleShapeComp extends ShapeComp {
 		this.shape.length = length;
 		super.setDirty();
 	}
-
-	toNet() {
-		var net = super.toNet();
-		net.shapeType = "capsule";
-		net.radius = this._radius;
-		net.length = this._length;
-		return net;
-	}
 }
 
 class BoxShapeComp extends ShapeComp {
 	constructor(width, height, offset, angle) {
-		this.shape = new p2.Box({width: width, height: height});
+		this.shape = new p2.Box({
+			width: width,
+			height: height
+		});
 		super(this.shape, offset, angle);
 		this._width = width;
 		this._height = height;
@@ -301,14 +298,6 @@ class BoxShapeComp extends ShapeComp {
 		this.shape.height = height;
 		super.setDirty();
 	}
-
-	toNet() {
-		var net = super.toNet();
-		net.shapeType = "box";
-		net.width = this._width;
-		net.height = this._height;
-		return net;
-	}
 }
 
 class PlaneShapeComp extends ShapeComp {
@@ -316,19 +305,15 @@ class PlaneShapeComp extends ShapeComp {
 		this.shape = new p2.Plane();
 		super(this.shape, offset, angle);
 	}
-
-	toNet() {
-		var net = super.toNet();
-		net.shapeType = "plane";
-		return net;
-	}
 }
 
 var go = new GameObject();
 go.addComponent(new ColorComp(0xffffff));
-var circle = new CircleShapeComp(3,[0,0],0);
+var circle = new CircleShapeComp(3, [0, 0], 0);
 go.addComponent(circle);
-var body = new BodyComp({mass: 1});
+var body = new BodyComp({
+	mass: 1
+});
 go.addComponent(body);
 go.removeComponent(circle);
 go.removeComponent(body);

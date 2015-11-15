@@ -2,6 +2,16 @@
 var p2 = require('p2');
 
 class Component {
+
+	static registerClass(compClass) {
+		if (!this.classes) this.classes = new Map();
+		this.classes.set(compClass.name, compClass);
+	}
+
+	static fromNet(netComponent) {
+		var comp = this.classes.get(netComponent.className).fromNet();
+	}
+
 	constructor(type) {
 		this.gameObject = null;
 		this.type = type;
@@ -43,6 +53,7 @@ class Color extends Component {
 		netAccu.color = this.color;
 	}
 }
+Component.registerClass(Color);
 
 class Body extends Component {
 	constructor(bodyOptions) {
@@ -78,8 +89,11 @@ class Body extends Component {
 		netAccu.angle = this.body.angle;
 		//netAccu.angularForce = this.body.angularForce;
 		//netAccu.angularVelocity = this.body.angularVelocity;
+
+		netAccu.mass = this.body.mass;
 	}
 }
+Component.registerClass(Body);
 
 class Shape extends Component {
 	constructor(shape, offset, angle) {
@@ -150,6 +164,7 @@ class CircleShape extends Shape {
 		netAccu.radius = this._radius;
 	}
 }
+Component.registerClass(CircleShape);
 
 class CapsuleShape extends Shape {
 	constructor(radius, length, offset, angle) {
@@ -187,6 +202,7 @@ class CapsuleShape extends Shape {
 		netAccu.length = this._length;
 	}
 }
+Component.registerClass(CapsuleShape);
 
 class BoxShape extends Shape {
 	constructor(width, height, offset, angle) {
@@ -223,6 +239,7 @@ class BoxShape extends Shape {
 		netAccu.height = this._height;
 	}
 }
+Component.registerClass(BoxShape);
 
 class PlaneShape extends Shape {
 	constructor(offset, angle) {
@@ -235,6 +252,7 @@ class PlaneShape extends Shape {
 		netAccu.shapeType = "plane";
 	}
 }
+Component.registerClass(PlaneShape);
 
 module.exports = Component;
 module.exports.Color = Color;

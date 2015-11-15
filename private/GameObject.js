@@ -1,4 +1,5 @@
 'use strict';
+var Component = require('./Component');
 
 class GameObject {
 
@@ -10,6 +11,13 @@ class GameObject {
 	    }
 	    return this.lastID;
   	}
+
+	static fromNet(netObject) {
+		var go = new GameObject();
+		go.id = netObject.id;
+		go.fromNet(netObject);
+		return go;
+	}
 
 	constructor(components) {
 		this.id = GameObject.getID();
@@ -26,19 +34,33 @@ class GameObject {
 
 	toNet(isFull) {
 		if (!this.isDirty && !isFull) return {};
-		var self = this;
 		var netComponents = [];
-		this.components.forEach( (comp) => {
-			if (comp.isDirty() || isFull) {
-				var netAccu;
-				comp.toNet(netAccu, isFull);
-				netComponents.push(netAccu);
-			}
+		this.components.forEach( (compTypeList) => {
+			compTypeList.forEach( (comp) => {
+				if (comp.isDirty() || isFull) {
+					var netAccu;
+					comp.toNet(netAccu, isFull);
+					netComponents.push(netAccu);
+				}
+			});
 		});
 		return {
 			"id" : this.id,
 			"components" : netComponents
 		};
+	}
+
+	fromNet(netObject) {
+		var self = this;
+		netObject.components.forEach((netComp) => {
+			var comp = self.getComponent(netComp.type);
+			if (comp) comp.updateFromNet(netComp);
+			else {
+				self.addComponent(
+					Component.FromNet(netComp)
+				);
+			}
+		});
 	}
 
 	addComponent(component) {

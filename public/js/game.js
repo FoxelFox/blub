@@ -23,14 +23,14 @@ function Grid(world, width, height) {
 	world.addBody(this.borderBody);
 }
 
-function GameObject(body) {
+function GameObject(pGameObject) {
 
 	var geometry = new THREE.CircleGeometry(1, 8);
 	var material = new THREE.MeshBasicMaterial({
 		color: 0x00ff00
 	});
 
-	this.id = body.id;
+	this.id = pGameObject.id;
 
 	this.mesh = new THREE.Mesh(geometry, material);
 
@@ -46,7 +46,7 @@ function GameObject(body) {
 }
 
 var sessionID;
-var myPlayer;
+var localPlayerID;
 var gameObjects = [];
 
 
@@ -114,12 +114,12 @@ function Game() {
 					obj.mesh.position.x = obj.body.position[0];
 					obj.mesh.position.y = obj.body.position[1];
 				}
-			});
 
-			if (myPlayer) {
-				this.camera.position.x = myPlayer.body.position[0];
-				this.camera.position.y = myPlayer.body.position[1];
-			}
+				if(localPlayerID === obj.id) {
+					this.camera.position.x = obj.body.position[0];
+					this.camera.position.y = obj.body.position[1];
+				}
+			});
 		};
 
 		var render = function() {
@@ -140,30 +140,26 @@ function Game() {
 	this.onGameJoin = function(res) {
 		sessionID = res.sessionID;
 
-		// add all bodies from server
-		res.bodies.forEach(function(body) {
-			addGameObject(body);
+		// add all gameObjects from server
+		res.gameObjects.forEach(function(go) {
+			addGameObject(go);
 		});
 	};
 
-	this.onSpawn = function(serverBodyID) {
-		gameObjects.forEach(function(obj) {
-			if (obj.id === serverBodyID) {
-				myPlayer = obj;
-			}
-		});
+	this.onSpawn = function(playerID) {
+		localPlayerID = playerID;
 	};
 
 	this.onServerUpdate = function(updates) {
 
 
-		updates.events.forEach(function(event) {
+		updates.globalEvents.forEach(function(event) {
 			switch (event.name) {
-				case 'addBody':
-					addGameObject(event.body);
+				case 'addGameObject':
+					addGameObject(event.gameObject);
 					break;
-				case 'removeBody':
-					deleteGameObject(event.id);
+				case 'removeGameObject':
+					deleteGameObject(event.gameObjectID);
 					break;
 				default:
 
@@ -184,16 +180,16 @@ function Game() {
 		};
 	};
 
-	function addGameObject(body) {
+	function addGameObject(pGameObject) {
 
 		// duplicate check
-		gameObjects.forEach(function(o) {
-			if (o.id === body.id) {
+		gameObjects.forEach(function(go) {
+			if (go.id === pGameObject.id) {
 				return;
 			}
 		});
 
-		var obj = new GameObject(body);
+		var obj = new GameObject(pGameObject);
 		gameObjects.push(obj);
 		world.addBody(obj.body);
 		scene.add(obj.mesh);

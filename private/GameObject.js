@@ -2,14 +2,14 @@
 
 class GameObject {
 
-	static getID(){
-	    if (!this.lastID && this.lastID!==0) {
-	      this.lastID=0;
-	    } else {
-	      this.lastID++;
-	    }
-	    return this.lastID;
-  	}
+	static getID() {
+		if (!this.lastID && this.lastID !== 0) {
+			this.lastID = 0;
+		} else {
+			this.lastID++;
+		}
+		return this.lastID;
+	}
 
 	constructor(components) {
 		this.id = GameObject.getID();
@@ -20,7 +20,9 @@ class GameObject {
 
 	update() {
 		this.components.forEach(comp => {
-			comp.update();
+			// TODO: update is not always a fuction, but why?
+			if (typeof comp.update === 'function')
+				comp.update();
 		});
 	}
 
@@ -28,16 +30,16 @@ class GameObject {
 		if (!this.isDirty && !isFull) return {};
 		var self = this;
 		var netComponents = [];
-		this.components.forEach( (comp) => {
-			if (comp.isDirty() || isFull) {
+		this.components.forEach((comp) => {
+			if (comp.isDirty || isFull) {
 				var netAccu;
 				comp.toNet(netAccu, isFull);
 				netComponents.push(netAccu);
 			}
 		});
 		return {
-			"id" : this.id,
-			"components" : netComponents
+			"id": this.id,
+			"components": netComponents
 		};
 	}
 

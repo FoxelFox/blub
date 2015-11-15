@@ -18,7 +18,7 @@ class Component {
 	update() {}
 
 	toNet(netAccu, isFull) {
-		if(!isFull) this.isDirty = false;
+		if (!isFull) this.isDirty = false;
 		netAccu.type = this.type;
 	}
 }
@@ -128,7 +128,9 @@ class Shape extends Component {
 
 class CircleShape extends Shape {
 	constructor(radius, offset, angle) {
-		var shape = new p2.Circle({radius: radius});
+		var shape = new p2.Circle({
+			radius: radius
+		});
 		super(shape, offset, angle);
 		this.shape = shape;
 		this._radius = radius;
@@ -153,7 +155,10 @@ class CircleShape extends Shape {
 
 class CapsuleShape extends Shape {
 	constructor(radius, length, offset, angle) {
-		var shape = new p2.Capsule({radius: radius, length: length});
+		var shape = new p2.Capsule({
+			radius: radius,
+			length: length
+		});
 		super(shape, offset, angle);
 		this.shape = shape;
 		this._radius = radius;
@@ -190,7 +195,10 @@ class CapsuleShape extends Shape {
 
 class BoxShape extends Shape {
 	constructor(width, height, offset, angle) {
-		this.shape = new p2.Box({width: width, height: height});
+		this.shape = new p2.Box({
+			width: width,
+			height: height
+		});
 		super(this.shape, offset, angle);
 		this._width = width;
 		this._height = height;
@@ -226,8 +234,7 @@ class BoxShape extends Shape {
 
 class PlaneShape extends Shape {
 	constructor(offset, angle) {
-		this.shape = new p2.Plane();
-		super(this.shape, offset, angle);
+		super(new p2.Plane(), offset, angle);
 	}
 
 	toNet(netAccu, isFull) {

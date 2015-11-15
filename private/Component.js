@@ -8,8 +8,8 @@ class Component {
 		this.classes.set(compClass.name, compClass);
 	}
 
-	static fromNet(netComponent) {
-		var comp = this.classes.get(netComponent.className).fromNet();
+	static fromNet(gameObject, netComponent) {
+		this.classes.get(netComponent.className).fromNet(netComponent);
 	}
 
 	constructor(type) {
@@ -34,6 +34,7 @@ class Component {
 }
 
 class Color extends Component {
+
 	constructor(color) {
 		super("color");
 		this._color = color;
@@ -51,6 +52,15 @@ class Color extends Component {
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
 		netAccu.color = this.color;
+	}
+
+	fromNet(netComponent) {
+		this._color = netComponent.color;
+	}
+
+	static fromNet(gameObject, netComponent) {
+		var comp = new Color(netComponent.color);
+		gameObject.addComponent(comp);
 	}
 }
 Component.registerClass(Color);
@@ -91,6 +101,12 @@ class Body extends Component {
 		//netAccu.angularVelocity = this.body.angularVelocity;
 
 		netAccu.mass = this.body.mass;
+	}
+
+	fromNet(netComponent) {
+		this.body.position = netComponent.position;
+		//this.body.force = netComponent.force;
+		this.body.velocity = netComponent.velocity;
 	}
 }
 Component.registerClass(Body);

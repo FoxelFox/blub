@@ -1,7 +1,7 @@
 'use strict';
 var p2 = require('p2');
-var Player = require('./Player');
-var Playfield = require('./Playfield');
+var Player = require('./asset/Player');
+var Playfield = require('./asset/Playfield');
 
 class Game {
 	constructor() {

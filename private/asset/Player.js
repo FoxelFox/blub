@@ -1,6 +1,6 @@
 'use strict';
-var GameObject = require('./GameObject');
-var Component = require('./Component');
+var GameObject = require('../GameObject');
+var Component = require('../Component');
 var p2 = require('p2');
 
 class Player extends Component {

@@ -1,6 +1,6 @@
 'use strict';
-var GameObject = require('./GameObject');
-var Component = require('./Component');
+var GameObject = require('../GameObject');
+var Component = require('../Component');
 
 function instantiate(options) {
 	return new GameObject([

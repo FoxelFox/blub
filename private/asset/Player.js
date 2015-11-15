@@ -1,6 +1,6 @@
 'use strict';
-var GameObject = require('./GameObject');
-var Component = require('./Component');
+var GameObject = require('../GameObject');
+var Component = require('../Component');
 var p2 = require('p2');
 
 class Player extends Component {
@@ -40,6 +40,13 @@ class Player extends Component {
 	}
 }
 
+
+/**
+ * Instantiate a new Player gameObject
+ * @param {String} [options.sessionID] Players unique session id
+ * @param {Number} [options.x] Players spawn position x
+ * @param {Number} [options.y] Players spawn position y
+ */
 function instantiate(options) {
 	return new GameObject([
 		new Component.Color(0x00ff00),

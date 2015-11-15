@@ -12,12 +12,12 @@ class GameObject {
 	    return this.lastID;
   	}
 
-	static fromNet(netObject) {
-		var go = new GameObject();
-		go.id = netObject.id;
-		go.fromNet(netObject);
-		return go;
-	}
+	//static fromNet(netObject) {
+	//	var go = new GameObject();
+	//	go.id = netObject.id;
+	//	go.fromNet(netObject);
+	//	return go;
+	//}
 
 	constructor(components) {
 		this.id = GameObject.getID();
@@ -50,18 +50,18 @@ class GameObject {
 		};
 	}
 
-	fromNet(netObject) {
-		var self = this;
-		netObject.components.forEach((netComp) => {
-			var comp = self.getComponent(netComp.type);
-			if (comp) comp.updateFromNet(netComp);
-			else {
-				self.addComponent(
-					Component.FromNet(netComp)
-				);
-			}
-		});
-	}
+	//fromNet(netObject) {
+	//	var self = this;
+	//	netObject.components.forEach((netComp) => {
+	//		var comp = self.getComponent(netComp.type);
+	//		if (comp) comp.updateFromNet(netComp);
+	//		else {
+	//			self.addComponent(
+	//				Component.FromNet(netComp)
+	//			);
+	//		}
+	//	});
+	//}
 
 	addComponent(component) {
 		this.addComponents([component]);

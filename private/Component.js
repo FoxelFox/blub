@@ -51,7 +51,8 @@ class Color extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.color = this.color;
+		var self = this;
+		netAccu.color = { "color" : self.color };
 	}
 
 	//fromNet(netComponent) {
@@ -92,15 +93,19 @@ class Body extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.position = this.body.position;
-		//netAccu.force = this.body.force;
-		netAccu.velocity = this.body.velocity;
+		var self = this;
+		netAccu.body = {
+			"position" : self.body.position,
+			//"force" : this.body.force,
+			"velocity" : self.body.velocity,
 
-		netAccu.angle = this.body.angle;
-		//netAccu.angularForce = this.body.angularForce;
-		//netAccu.angularVelocity = this.body.angularVelocity;
+			"angle" : self.body.angle,
+			//"angularForce" : this.body.angularForce,
+			//"angularVelocity" : this.body.angularVelocity,
 
-		netAccu.mass = this.body.mass;
+			"mass" : self.body.mass
+		};
+
 	}
 
 	//fromNet(netComponent) {
@@ -163,8 +168,11 @@ class Shape extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.offset = this._offset;
-		netAccu.angle = this._angle;
+		var self = this;
+		netAccu.shape = {
+			"offset" : self._offset,
+			"angle" : self._angle
+		};
 	}
 
 	//fromNet(netComponent) {
@@ -197,8 +205,11 @@ class CircleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "circle";
-		netAccu.radius = this._radius;
+		netAccu.shape.shapeType = "CIRCLE";
+		var self = this;
+		netAccu.shape.circle = {
+			"radius" :  self._radius
+		};
 	}
 
 	//fromNet(netComponent) {
@@ -243,9 +254,12 @@ class CapsuleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "capsule";
-		netAccu.radius = this._radius;
-		netAccu.length = this._length;
+		netAccu.shapeType = "CAPSULE";
+		var self = this;
+		netAccu..shape.circle = {
+			"radius" : self._radius,
+			"length" : self._length
+		};
 	}
 }
 //Component.registerClass(CapsuleShape);
@@ -297,7 +311,7 @@ class PlaneShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "plane";
+		netAccu.shape.shapeType = "PLANE";
 	}
 }
 //Component.registerClass(PlaneShape);

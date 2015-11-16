@@ -84,7 +84,7 @@ class Game {
 		});
 	}
 
-	getGameObjects(isFull) {
+	getNetGameObjects(isFull) {
 		var go = [];
 		this.gameObjects.forEach(obj => {
 			go.push(obj.toNet(isFull));

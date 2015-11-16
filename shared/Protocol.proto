@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message Join {
+	uint32 sessionID = 1;
+	repeated gameObject.GameObject gos = 2;
+}
+
+message Update {
+	repeated gameObject.GameObject gos = 1;
+}

@@ -1,9 +1,11 @@
 'use strict';
 var Game = require('./Game');
+var proto = require('protobufjs');
 
 class Controller {
 	constructor(io) {
 		this.game = new Game();
+		initProtoBuf();
 		this.socket(io);
 	}
 
@@ -13,7 +15,7 @@ class Controller {
 			// send players session id and all gameObjects
 			socket.emit('game:join', {
 				sessionID: socket.id,
-				gameObjects: this.game.getGameObjects(true)
+				gameObjects: toProtoBuf(this.game.getNetGameObjects(true));
 			});
 
 			// create player
@@ -36,7 +38,7 @@ class Controller {
 			this.game.update();
 
 			var update = {
-				gameObjects: this.game.getGameObjects(false),
+				gameObjects: toProtoBuf(this.game.getNetGameObjects(false)),
 				globalEvents: this.game.globalEvents
 			};
 
@@ -50,6 +52,21 @@ class Controller {
 			this.game.sessionEvents = [];
 			this.game.globalEvents = [];
 		}, 50);
+	}
+
+	initProtoBuf() {
+		this.protoBuilder = ProtoBuf.loadProtoFile("../shared/GameObject.proto").build();
+	}
+
+	createWelcomePaket() {
+		var response = this.proto.Go
+	}
+
+	toProtoBuf(netGameObjects) {
+		var response = this.protoBuilder.GoResponse;
+		response.go = netGameObjects;
+
+		response.encode();
 	}
 }
 

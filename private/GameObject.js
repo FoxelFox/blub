@@ -28,7 +28,8 @@ class GameObject {
 
 	update() {
 		this.components.forEach(comp => {
-			comp.update();
+			if (typeof comp.update === 'function')
+				comp.update();
 		});
 	}
 
@@ -37,8 +38,8 @@ class GameObject {
 		var netComponents = [];
 		this.components.forEach( (compTypeList) => {
 			compTypeList.forEach( (comp) => {
-				if (comp.isDirty() || isFull) {
-					var netAccu;
+				if (comp.isDirty || isFull) {
+					var netAccu = {};
 					comp.toNet(netAccu, isFull);
 					netComponents.push(netAccu);
 				}

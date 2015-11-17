@@ -25,24 +25,52 @@ function Grid(world, width, height) {
 
 function GameObject(pGameObject) {
 
-	var geometry = new THREE.CircleGeometry(1, 8);
+	// parse components
+	var colorComp;
+	var shapeComps = [];
+	var bodyComp;
+	pGameObject.components.forEach(function (comp) {
+		switch (comp.type) {
+			case 'shape':
+				shapeComps.push(comp);
+				break;
+			case 'body':
+				bodyComp = comp;
+				break;
+			case 'color':
+				colorComp = comp;
+				break;
+		}
+	});
+
+	// build objects based from components
+	var body = new p2.Body({
+		mass: bodyComp.mass,
+		position: bodyComp.position,
+		damping: 0.99
+	});
+	var geometry;
+	shapeComps.forEach(function (shape) {
+		switch (shape.shapeType) {
+			case 'circle':
+				geometry = new THREE.CircleGeometry(shape.radius, 8);
+				body.addShape(new p2.Circle({
+					radius: shape.radius
+				}));
+				break;
+			default:
+				geometry = new THREE.CircleGeometry(1, 8);
+		}
+	});
 	var material = new THREE.MeshBasicMaterial({
-		color: 0x00ff00
+		color: colorComp.color
 	});
 
+
+	// store properties to object
 	this.id = pGameObject.id;
-
 	this.mesh = new THREE.Mesh(geometry, material);
-
-	this.body = new p2.Body({
-		mass: body.mass,
-		position: body.position,
-		damping: body.damping
-	});
-
-	this.body.addShape(new p2.Circle({
-		radius: 1
-	}));
+	this.body = body;
 }
 
 var sessionID;
@@ -166,7 +194,7 @@ function Game() {
 			}
 		});
 
-		updates.bodies.forEach(function(body, i) {
+		updates.gameObjects.forEach(function(go, i) {
 			gameObjects[i].body.position = body.p;
 			gameObjects[i].body.velocity = body.v;
 			gameObjects[i].body.force = body.f;

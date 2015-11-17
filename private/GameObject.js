@@ -28,6 +28,7 @@ class GameObject {
 
 	update() {
 		this.components.forEach(comp => {
+			// TODO: this is just a bug workaround
 			if (typeof comp.update === 'function')
 				comp.update();
 		});

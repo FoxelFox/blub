@@ -94,6 +94,7 @@ var gameObjects = [];
 function Game() {
 
 	var scene;
+	var camera;
 	var world = new p2.World({
 		gravity: [0.0, 0.0]
 	});
@@ -101,10 +102,18 @@ function Game() {
 		up: false,
 		down: false,
 		left: false,
-		right: false
+		right: false,
+		mouse: {
+			rel: [0,0],
+			abs: [0,0]
+		}
 	};
 
 	this.init = function() {
+
+		// set event listener for mouse movement
+		window.onmousemove = setMouseRel;
+
 		scene = new THREE.Scene();
 
 		var ar = window.innerWidth / window.innerHeight;
@@ -153,8 +162,8 @@ function Game() {
 				}
 
 				if(localPlayerID === obj.id) {
-					this.camera.position.x = obj.body.position[0];
-					this.camera.position.y = obj.body.position[1];
+					camera.position.x = obj.body.position[0];
+					camera.position.y = obj.body.position[1];
 				}
 			});
 		};
@@ -200,14 +209,33 @@ function Game() {
 		updates.gameObjects.forEach(function(goUpdate, i) {
 			gameObjects[i].fromNet(goUpdate);
 		});
+
+		setMouseAbs();
 	};
 
 	this.getLocalPlayerUpdate = function() {
+
+
 		return {
+
 			sessionID: sessionID,
 			controls: controls
 		};
 	};
+
+	function setMouseRel (event) {
+		controls.mouse.rel = [(event.clientX / window.innerWidth) * 2 - 1,  - ( event.clientY / window.innerHeight ) * 2 + 1];
+	}
+
+	function setMouseAbs () {
+		var vector = new THREE.Vector3();
+		vector.set(controls.mouse.rel[0], controls.mouse.rel[1], 0.5 );
+		vector.unproject(camera);
+		var dir = vector.sub(camera.position).normalize();
+		var distance = - camera.position.z / dir.z;
+		var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+		controls.mouse.abs = [pos.x,pos.y];
+	}
 
 	function addGameObject(pGameObject) {
 

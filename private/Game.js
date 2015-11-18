@@ -22,6 +22,7 @@ class Game {
 		this.gameObjects.forEach(obj => {
 			obj.update();
 		});
+		this.world.step(0.05);
 	}
 
 	onPlayerConnected(socket) {
@@ -59,7 +60,7 @@ class Game {
 		// if obj has a body then add it to the world
 		var goBody = gameObject.getComponent('body');
 		if (goBody)
-			this.world.addBody(goBody);
+			this.world.addBody(goBody.body);
 
 		this.globalEvents.push({
 			name: 'addGameObject',

@@ -52,9 +52,7 @@ class Color extends Component {
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
 		var self = this;
-		netAccu.color = {
-			"color": self.color
-		};
+		netAccu.color = self.color;
 	}
 
 	//fromNet(netComponent) {

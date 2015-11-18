@@ -30,9 +30,9 @@ function GameObject(pGameObject) {
 	var shapeComps = [];
 	var bodyComp;
 
-	this.fromNet = function (update) {
+	this.fromNet = function (net) {
 		// parse components
-		pGameObject.components.forEach(function (comp) {
+		net.components.forEach(function (comp) {
 			switch (comp.type) {
 				case 'shape':
 					shapeComps.push(comp);
@@ -46,7 +46,7 @@ function GameObject(pGameObject) {
 			}
 		});
 
-		if (!self.id)
+		if (!self.isInitialized)
 			return; // object is not fully created
 
 		// update
@@ -86,6 +86,7 @@ function GameObject(pGameObject) {
 	this.id = pGameObject.id;
 	this.mesh = new THREE.Mesh(geometry, material);
 	this.body = body;
+	this.isInitialized = true;
 }
 
 var sessionID;
@@ -195,7 +196,6 @@ function Game() {
 
 	this.onServerUpdate = function(updates) {
 
-
 		updates.globalEvents.forEach(function(event) {
 			switch (event.name) {
 				case 'addGameObject':
@@ -237,7 +237,8 @@ function Game() {
 	}
 
 	function deleteGameObject(id) {
-		world.removeBody(gameObjects[id]);
+		world.removeBody(gameObjects[id].body);
+		scene.remove(gameObjects[id].mesh);
 		// todo scene remove
 		delete gameObjects[id];
 	}

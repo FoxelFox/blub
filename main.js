@@ -4,11 +4,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var router = express.Router();
-var Controller = new require('./private/controller.js');
+var Controller = new require('./private/Controller.js');
 var ctrl = new Controller(io);
 
 router.use(express.static('public'));
-router.get('/', function (req, res) {
+router.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/html/index.html');
 });
 

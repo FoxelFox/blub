@@ -23,55 +23,103 @@ function Grid(world, width, height) {
 	world.addBody(this.borderBody);
 }
 
-function GameObject(body) {
+function GameObject(pGameObject) {
 
-	var geometry = new THREE.CircleGeometry(1, 8);
+	var self = this;
+	var colorComp;
+	var shapeComps = [];
+	var bodyComp;
+
+	this.fromNet = function (net) {
+		// parse components
+		net.components.forEach(function (comp) {
+			switch (comp.type) {
+				case 'shape':
+					shapeComps.push(comp);
+					break;
+				case 'body':
+					bodyComp = comp;
+					break;
+				case 'color':
+					colorComp = comp;
+					break;
+			}
+		});
+
+		if (!self.isInitialized)
+			return; // object is not fully created
+
+		// update
+		body.position = bodyComp.body.position || body.position;
+		body.velocity = bodyComp.body.velocity || body.velocity;
+		body.force = bodyComp.body.force || body.force;
+	};
+
+	this.fromNet(pGameObject);
+
+	// build objects based from components
+	var body = new p2.Body({
+		mass: bodyComp.body.mass,
+		position: bodyComp.body.position,
+		damping: 0.99
+	});
+	var geometry;
+	shapeComps.forEach(function (shape) {
+		switch (shape.shapeType) {
+			case 'circle':
+				geometry = new THREE.CircleGeometry(shape.radius, 8);
+				body.addShape(new p2.Circle({
+					radius: shape.radius
+				}));
+				break;
+			default:
+				geometry = new THREE.CircleGeometry(1, 8);
+		}
+	});
 	var material = new THREE.MeshBasicMaterial({
-		color: 0x00ff00
+		color: colorComp.color
 	});
 
-	this.id = body.id;
-
+	// store properties to object
+	this.id = pGameObject.id;
 	this.mesh = new THREE.Mesh(geometry, material);
-
-	this.body = new p2.Body({
-		mass: body.mass,
-		position: body.position,
-		damping: body.damping
-	});
-
-	this.body.addShape(new p2.Circle({
-		radius: 1
-	}));
+	this.body = body;
+	this.isInitialized = true;
 }
 
 var sessionID;
 var localPlayerID;
 var gameObjects = [];
 
-
 function Game() {
 	var game = this;
 	var scene;
-
+	var camera;
 	var world = new p2.World({
 		gravity: [0.0, 0.0]
 	});
-
 	var controls = {
 		up: false,
 		down: false,
 		left: false,
-		right: false
+		right: false,
+		mouse: {
+			rel: [0,0],
+			abs: [0,0]
+		}
 	};
 
 	this.serverUpdateMessage = null;
 
 	this.init = function() {
+
+		// set event listener for mouse movement
+		window.onmousemove = setMouseRel;
+
 		scene = new THREE.Scene();
 
 		var ar = window.innerWidth / window.innerHeight;
-		var camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
+		camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -107,7 +155,6 @@ function Game() {
 			controls.right = false;
 		});
 
-
 		var physics = function() {
 
 			if (game.serverUpdateMessage) {
@@ -119,22 +166,24 @@ function Game() {
 				world.step(0.0166666666667);
 			}
 
+			// update render stuf
 			gameObjects.forEach(function(obj) {
-				if (obj.body.position) {
-					obj.mesh.position.x = obj.body.position[0];
-					obj.mesh.position.y = obj.body.position[1];
-				}
 
-				if (localPlayerID === obj.id) {
+				// copy new position to render objects
+				obj.mesh.position.x = obj.body.position[0];
+				obj.mesh.position.y = obj.body.position[1];
+
+				// set camera to players position
+				if(localPlayerID === obj.id) {
 					camera.position.x = obj.body.position[0];
 					camera.position.y = obj.body.position[1];
 				}
 			});
+
+			setMouseAbs();
 		};
 
 		var render = function() {
-
-
 			requestAnimationFrame(render);
 			physics();
 			renderer.render(scene, camera);
@@ -143,16 +192,15 @@ function Game() {
 		render();
 
 		var grid = new Grid(world, 50, 50);
-		//grid.mesh.rotation.x = Math.PI * 0.5;
 		scene.add(grid.meshPlayField);
 	};
 
 	this.onGameJoin = function(res) {
 		sessionID = res.sessionID;
 
-		// add all bodies from server
-		res.bodies.forEach(function(body) {
-			addGameObject(body);
+		// add all gameObjects from server
+		res.gameObjects.forEach(function(go) {
+			addGameObject(go);
 		});
 	};
 
@@ -162,51 +210,62 @@ function Game() {
 
 	this.onServerUpdate = function(updates) {
 
-
-		updates.events.forEach(function(event) {
+		updates.globalEvents.forEach(function(event) {
 			switch (event.name) {
-				case 'addBody':
-					addGameObject(event.body);
+				case 'addGameObject':
+					addGameObject(event.gameObject);
 					break;
-				case 'removeBody':
-					deleteGameObject(event.id);
+				case 'removeGameObject':
+					deleteGameObject(event.gameObjectID);
 					break;
-				default:
-
 			}
 		});
 
-		updates.bodies.forEach(function(body, i) {
-			gameObjects[i].body.position = body.p;
-			gameObjects[i].body.velocity = body.v;
-			gameObjects[i].body.force = body.f;
+		updates.gameObjects.forEach(function(goUpdate, i) {
+			gameObjects[i].fromNet(goUpdate);
 		});
 	};
 
 	this.getLocalPlayerUpdate = function() {
+
 		return {
 			sessionID: sessionID,
 			controls: controls
 		};
 	};
 
-	function addGameObject(body) {
+	function setMouseRel (event) {
+		controls.mouse.rel = [(event.clientX / window.innerWidth) * 2 - 1,  - ( event.clientY / window.innerHeight ) * 2 + 1];
+	}
+
+	function setMouseAbs () {
+		var vector = new THREE.Vector3();
+		vector.set(controls.mouse.rel[0], controls.mouse.rel[1], 0.5 );
+		vector.unproject(camera);
+		var dir = vector.sub(camera.position).normalize();
+		var distance = - camera.position.z / dir.z;
+		var pos = camera.position.clone().add(dir.multiplyScalar(distance));
+		controls.mouse.abs = [pos.x,pos.y];
+	}
+
+	function addGameObject(pGameObject) {
 
 		// duplicate check
-		gameObjects.forEach(function(o) {
-			if (o.id === body.id) {
+		gameObjects.forEach(function(go) {
+			if (go.id === pGameObject.id) {
 				return;
 			}
 		});
 
-		var obj = new GameObject(body);
+		var obj = new GameObject(pGameObject);
 		gameObjects.push(obj);
 		world.addBody(obj.body);
 		scene.add(obj.mesh);
 	}
 
 	function deleteGameObject(id) {
-		world.removeBody(gameObjects[id]);
+		world.removeBody(gameObjects[id].body);
+		scene.remove(gameObjects[id].mesh);
 		// todo scene remove
 		delete gameObjects[id];
 	}

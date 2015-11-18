@@ -1,0 +1,11 @@
+syntax = "proto3";
+package gameObject;
+
+message UpdateResponse {
+	repeated GameObject go = 1;
+}
+
+message GameObject {
+    required uint32 id = 1;
+    repeated component.Component components = 2;
+}

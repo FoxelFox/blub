@@ -1,0 +1,34 @@
+syntax = "proto3";
+package shape;
+
+message Shape {
+	optional base.Vector2 offset = 1;
+	optional float angle = 2;
+	required ShapeType shapeType;
+	oneof shape {
+		Circle circle = 4;
+		Capsule capsule = 5;
+		Box box = 6;
+	}
+}
+
+enum ShapeType {
+	CIRCLE = 1;
+	CAPSULE = 2;
+	BOX = 3;
+	PLANE = 4;
+}
+
+message Circle {
+	required float radius = 1;
+}
+
+message Capsule {
+	required float radius = 1;
+	required float length = 2;
+}
+
+message Box {
+	required float width;
+	required float height;
+}

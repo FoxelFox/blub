@@ -1,0 +1,25 @@
+syntax = "proto3";
+package component;
+
+message Component {
+	required string type = 1;
+	oneof component {
+		Color color = 2;
+		Body body = 3;
+		shape.Shape shape = 4;
+	}
+}
+
+message Color {
+	required core.Color color = 1;
+}
+
+message Body {
+	required core.Vector2 position = 1;
+	optional core.Vector2 velocity = 2;
+	//optional core.Vector2 force = 3;
+	required float angle = 4;
+	//optional float angularForce = 5;
+	//optional float angularVelocity = 6;
+	optional float mass = 7;
+}

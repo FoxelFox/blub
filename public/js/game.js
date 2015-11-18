@@ -25,28 +25,43 @@ function Grid(world, width, height) {
 
 function GameObject(pGameObject) {
 
-	// parse components
+	var self = this;
 	var colorComp;
 	var shapeComps = [];
 	var bodyComp;
-	pGameObject.components.forEach(function (comp) {
-		switch (comp.type) {
-			case 'shape':
-				shapeComps.push(comp);
-				break;
-			case 'body':
-				bodyComp = comp;
-				break;
-			case 'color':
-				colorComp = comp;
-				break;
-		}
-	});
+
+	this.fromNet = function (update) {
+		// parse components
+		pGameObject.components.forEach(function (comp) {
+			switch (comp.type) {
+				case 'shape':
+					shapeComps.push(comp);
+					break;
+				case 'body':
+					bodyComp = comp;
+					break;
+				case 'color':
+					colorComp = comp;
+					break;
+			}
+		});
+
+		if (!self.id)
+			return; // object is not fully created
+
+		// update
+		body.position = bodyComp.body.position || body.position;
+		body.velocity = bodyComp.body.velocity || body.velocity;
+		body.force = bodyComp.body.force || body.force;
+
+
+	};
+	this.fromNet(pGameObject);
 
 	// build objects based from components
 	var body = new p2.Body({
-		mass: bodyComp.mass,
-		position: bodyComp.position,
+		mass: bodyComp.body.mass,
+		position: bodyComp.body.position,
 		damping: 0.99
 	});
 	var geometry;
@@ -194,10 +209,8 @@ function Game() {
 			}
 		});
 
-		updates.gameObjects.forEach(function(go, i) {
-			gameObjects[i].body.position = body.p;
-			gameObjects[i].body.velocity = body.v;
-			gameObjects[i].body.force = body.f;
+		updates.gameObjects.forEach(function(goUpdate, i) {
+			gameObjects[i].fromNet(goUpdate);
 		});
 	};
 

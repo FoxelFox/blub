@@ -3,14 +3,14 @@ var p2 = require('p2');
 
 class Component {
 
-	static registerClass(compClass) {
-		if (!this.classes) this.classes = new Map();
-		this.classes.set(compClass.name, compClass);
-	}
+	//static registerClass(compClass) {
+	//	if (!this.classes) this.classes = new Map();
+	//	this.classes.set(compClass.name, compClass);
+	//}
 
-	static fromNet(gameObject, netComponent) {
-		this.classes.get(netComponent.className).fromNet(netComponent);
-	}
+	//static fromNet(gameObject, netComponent) {
+	//	this.classes.get(netComponent.className).fromNet(netComponent);
+	//}
 
 	constructor(type) {
 		this.gameObject = null;
@@ -51,19 +51,22 @@ class Color extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.color = this.color;
+		var self = this;
+		netAccu.color = {
+			"color": self.color
+		};
 	}
 
-	fromNet(netComponent) {
-		this._color = netComponent.color;
-	}
+	//fromNet(netComponent) {
+	//	this._color = netComponent.color;
+	//}
 
-	static fromNet(gameObject, netComponent) {
-		var comp = new Color(netComponent.color);
-		gameObject.addComponent(comp);
-	}
+	//static fromNet(gameObject, netComponent) {
+	//	var comp = new Color(netComponent.color);
+	//	gameObject.addComponent(comp);
+	//}
 }
-Component.registerClass(Color);
+//Component.registerClass(Color);
 
 class Body extends Component {
 	constructor(bodyOptions) {
@@ -92,24 +95,40 @@ class Body extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.position = this.body.position;
-		//netAccu.force = this.body.force;
-		netAccu.velocity = this.body.velocity;
+		var self = this;
+		netAccu.body = {
+			"position": self.body.position,
+			//"force" : this.body.force,
+			"velocity": self.body.velocity,
 
-		netAccu.angle = this.body.angle;
-		//netAccu.angularForce = this.body.angularForce;
-		//netAccu.angularVelocity = this.body.angularVelocity;
+			"angle": self.body.angle,
+			//"angularForce" : this.body.angularForce,
+			//"angularVelocity" : this.body.angularVelocity,
 
-		netAccu.mass = this.body.mass;
+			"mass": self.body.mass
+		};
+
 	}
 
-	fromNet(netComponent) {
-		this.body.position = netComponent.position;
-		//this.body.force = netComponent.force;
-		this.body.velocity = netComponent.velocity;
-	}
+	//fromNet(netComponent) {
+	//	this.body.position = netComponent.position;
+	//	//this.body.force = netComponent.force;
+	//	this.body.velocity = netComponent.velocity;
+	//
+	//	this.body.angle = netComponent.angle;
+	//	//this.body.angularForce  = netComponent.angularForce;
+	//	//this.body.angularVelocity  = netComponent.angularVelocity;
+	//
+	//	this.body.mass = netComponent.mass;
+	//}
+
+	//static fromNet(gameObject, netComponent) {
+	//	var comp = new Body();
+	//	gameObject.addComponent(comp);
+	//	comp.fromNet(netComponent);
+	//}
 }
-Component.registerClass(Body);
+//Component.registerClass(Body);
 
 class Shape extends Component {
 	constructor(shape, offset, angle) {
@@ -141,7 +160,7 @@ class Shape extends Component {
 
 	onAdded() {
 		var body = this.gameObject.getComponent("body");
-		if (body) body.addShape(this.shape, this.offset, this.angle);
+		if (body) body.addShape(this.shape, this._offset, this._angle);
 	}
 
 	onRemoved() {
@@ -151,9 +170,19 @@ class Shape extends Component {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.offset = this._offset;
-		netAccu.angle = this._angle;
+		var self = this;
+		netAccu.shape = {
+			"offset": self._offset,
+			"angle": self._angle
+		};
 	}
+
+	//fromNet(netComponent) {
+	//	this._offset = netComponent.offset;
+	//	this.shape.position = netComponent.offset;
+	//	this._angle = netComponent.angle;
+	//	this.shape.angle = netComponent.offset;
+	//}
 }
 
 class CircleShape extends Shape {
@@ -178,11 +207,20 @@ class CircleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "circle";
-		netAccu.radius = this._radius;
+		netAccu.shape.shapeType = "CIRCLE";
+		var self = this;
+		netAccu.shape.circle = {
+			"radius": self._radius
+		};
 	}
+
+	//fromNet(netComponent) {
+	//	super.fromNet(netComponent);
+	//	this._radius = netComponent.radius;
+	//	this.shape.radius = netComponent.radius;
+	//}
 }
-Component.registerClass(CircleShape);
+//Component.registerClass(CircleShape);
 
 class CapsuleShape extends Shape {
 	constructor(radius, length, offset, angle) {
@@ -218,12 +256,15 @@ class CapsuleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "capsule";
-		netAccu.radius = this._radius;
-		netAccu.length = this._length;
+		netAccu.shapeType = "CAPSULE";
+		var self = this;
+		netAccu.shape.circle = {
+			"radius": self._radius,
+			"length": self._length
+		};
 	}
 }
-Component.registerClass(CapsuleShape);
+//Component.registerClass(CapsuleShape);
 
 class BoxShape extends Shape {
 	constructor(width, height, offset, angle) {
@@ -263,7 +304,7 @@ class BoxShape extends Shape {
 		netAccu.height = this._height;
 	}
 }
-Component.registerClass(BoxShape);
+//Component.registerClass(BoxShape);
 
 class PlaneShape extends Shape {
 	constructor(offset, angle) {
@@ -272,10 +313,10 @@ class PlaneShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "plane";
+		netAccu.shape.shapeType = "PLANE";
 	}
 }
-Component.registerClass(PlaneShape);
+//Component.registerClass(PlaneShape);
 
 module.exports = Component;
 module.exports.Color = Color;

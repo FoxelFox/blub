@@ -5,8 +5,6 @@ window.onload = game.init;
 
 app.controller('indexController', function(socket) {
 
-
-
 	socket.on('game:join', function(res) {
 		game.onGameJoin(res);
 	});
@@ -19,5 +17,4 @@ app.controller('indexController', function(socket) {
 		game.onServerUpdate(JSON.parse(res));
 		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
-
 });

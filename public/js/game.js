@@ -53,9 +53,8 @@ function GameObject(pGameObject) {
 		body.position = bodyComp.body.position || body.position;
 		body.velocity = bodyComp.body.velocity || body.velocity;
 		body.force = bodyComp.body.force || body.force;
-
-
 	};
+
 	this.fromNet(pGameObject);
 
 	// build objects based from components
@@ -81,7 +80,6 @@ function GameObject(pGameObject) {
 		color: colorComp.color
 	});
 
-
 	// store properties to object
 	this.id = pGameObject.id;
 	this.mesh = new THREE.Mesh(geometry, material);
@@ -93,22 +91,18 @@ var sessionID;
 var localPlayerID;
 var gameObjects = [];
 
-
 function Game() {
 
 	var scene;
-
 	var world = new p2.World({
 		gravity: [0.0, 0.0]
 	});
-
 	var controls = {
 		up: false,
 		down: false,
 		left: false,
 		right: false
 	};
-
 
 	this.init = function() {
 		scene = new THREE.Scene();
@@ -150,7 +144,6 @@ function Game() {
 			controls.right = false;
 		});
 
-
 		var phcsics = function() {
 			world.step(0.0166666666667);
 			gameObjects.forEach(function(obj) {
@@ -167,8 +160,6 @@ function Game() {
 		};
 
 		var render = function() {
-
-
 			requestAnimationFrame(render);
 			phcsics();
 			renderer.render(scene, camera);
@@ -177,7 +168,6 @@ function Game() {
 		render();
 
 		var grid = new Grid(world, 50, 50);
-		//grid.mesh.rotation.x = Math.PI * 0.5;
 		scene.add(grid.meshPlayField);
 	};
 
@@ -204,8 +194,6 @@ function Game() {
 				case 'removeGameObject':
 					deleteGameObject(event.gameObjectID);
 					break;
-				default:
-
 			}
 		});
 

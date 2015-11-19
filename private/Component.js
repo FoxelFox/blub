@@ -256,7 +256,7 @@ class CapsuleShape extends Shape {
 		super.toNet(netAccu, isFull);
 		netAccu.shapeType = "CAPSULE";
 		var self = this;
-		netAccu..shape.circle = {
+		netAccu.shape.circle = {
 			"radius" : self._radius,
 			"length" : self._length
 		};

@@ -4,7 +4,7 @@ package core;
 message Vector3 {
 	required float x = 1;
 	required float y = 2;
-	required float y = 3;
+	required float z = 3;
 }
 
 message Vector2 {

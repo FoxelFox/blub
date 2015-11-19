@@ -1,11 +1,11 @@
 'use strict';
 var Game = require('./Game');
-var proto = require('protobufjs');
+var ProtoBuf = require('protobufjs');
 
 class Controller {
 	constructor(io) {
 		this.game = new Game();
-		initProtoBuf();
+		this.initProtoBuf();
 		this.socket(io);
 	}
 
@@ -13,19 +13,16 @@ class Controller {
 		io.on('connection', (socket) => {
 
 			// send players session id and all gameObjects
-			socket.emit('game:join', {
-				sessionID: socket.id,
-				gameObjects: toProtoBuf(this.game.getNetGameObjects(true));
-			});
+			socket.emit('game:join', this.createJoinPaket(socket.id));
 
 			// create player
 			this.game.onPlayerConnected(socket);
 
-			socket.on('disconnect', () => {
+			socket.on('game:quit', () => {
 				this.game.onPlayerDisconnected(socket.id);
 			});
 
-			socket.on('chat message', (msg) => {
+			socket.on('chat:message', (msg) => {
 				io.emit('chat log', msg);
 			});
 
@@ -37,12 +34,7 @@ class Controller {
 		setInterval(() => {
 			this.game.update();
 
-			var update = {
-				gameObjects: toProtoBuf(this.game.getNetGameObjects(false)),
-				globalEvents: this.game.globalEvents
-			};
-
-			io.emit('server:update', JSON.stringify(update));
+			io.emit('server:update', this.createUpdatePaket());
 
 			this.game.sessionEvents.forEach((sEvent) => {
 				sEvent.socket.emit('game:spawn', sEvent.gameObjectID);
@@ -55,19 +47,23 @@ class Controller {
 	}
 
 	initProtoBuf() {
-		this.protoBuilder = ProtoBuf.loadProtoFile("../shared/GameObject.proto").build();
+		this.protoBuilder = ProtoBuf.loadProtoFile(__dirname+"/../public/shared/Protocol.proto").build();
 	}
 
-	createWelcomePaket() {
-		var response = this.proto.Go
+	createJoinPaket(socketID) {
+		var join = this.protoBuilder.Join;
+		join.sessionID = socketID;
+		join.gos = this.game.getNetGameObjects(true);
+		return join.encode().toBuffer();
 	}
 
-	toProtoBuf(netGameObjects) {
-		var response = this.protoBuilder.GoResponse;
-		response.go = netGameObjects;
-
-		response.encode();
+	createUpdatePaket() {
+		var update = this.protoBuilder.Update;
+		update.gos = this.game.getNetGameObjects(false);
+		update.events = this.game.globalEvents;
+		return update.encode().toBuffer();
 	}
+
 }
 
 module.exports = Controller;

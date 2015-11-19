@@ -27,23 +27,28 @@ class GameObject {
 	}
 
 	update() {
-		this.components.forEach(comp => {
-			comp.update();
-		});
+		for (var compList of this.components.values()) {
+			var length = compList.length;
+			for (var i = 0; i < length; i++) {
+				compList[i].update();
+			}
+		}
 	}
 
 	toNet(isFull) {
 		if (!this.isDirty && !isFull) return {};
 		var netComponents = [];
-		this.components.forEach( (compTypeList) => {
-			compTypeList.forEach( (comp) => {
-				if (comp.isDirty() || isFull) {
-					var netAccu;
-					comp.toNet(netAccu, isFull);
+		for (var compList of this.components.values()) {
+			var length = compList.length;
+			for (var i = 0; i < length; i++) {
+				if (compList[i].isDirty || isFull) {
+					var netAccu = {};
+					compList[i].toNet(netAccu, isFull);
 					netComponents.push(netAccu);
 				}
-			});
-		});
+			}
+		}
+		
 		return {
 			"id" : this.id,
 			"components" : netComponents

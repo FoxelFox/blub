@@ -1,5 +1,7 @@
 syntax = "proto3";
 package component;
+import "Shape.proto";
+import "Core.proto";
 
 message Component {
 	required string type = 1;

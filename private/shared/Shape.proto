@@ -1,10 +1,11 @@
 syntax = "proto3";
 package shape;
+import "Core.proto";
 
 message Shape {
-	optional base.Vector2 offset = 1;
+	optional core.Vector2 offset = 1;
 	optional float angle = 2;
-	required ShapeType shapeType;
+	required ShapeType shapeType = 3;
 	oneof shape {
 		Circle circle = 4;
 		Capsule capsule = 5;
@@ -13,10 +14,10 @@ message Shape {
 }
 
 enum ShapeType {
-	CIRCLE = 1;
-	CAPSULE = 2;
-	BOX = 3;
-	PLANE = 4;
+	CIRCLE = 0;
+	CAPSULE = 1;
+	BOX = 2;
+	PLANE = 3;
 }
 
 message Circle {
@@ -29,6 +30,6 @@ message Capsule {
 }
 
 message Box {
-	required float width;
-	required float height;
+	required float width = 1;
+	required float height = 2;
 }

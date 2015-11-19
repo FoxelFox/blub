@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "GameObject.proto";
+import "Event.proto";
+
+message Join {
+	required uint32 sessionID = 1;
+	repeated gameObject.GameObject gos = 2;
+}
+
+message Update {
+	repeated gameObject.GameObject gos = 1;
+	optional event.EventList events = 2;
+}

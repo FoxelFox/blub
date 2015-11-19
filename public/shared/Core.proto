@@ -1,0 +1,25 @@
+syntax = "proto3";
+package core;
+
+message Vector3 {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+}
+
+message Vector2 {
+	required float x = 1;
+	required float y = 2;
+}
+
+message Orientation {
+	required Vector2 position = 1;
+	required float angle = 2;
+}
+
+message Color {
+	required uint32 r = 1;
+	required uint32 g = 2;
+	required uint32 b = 3;
+	optional uint32 a = 4;
+}

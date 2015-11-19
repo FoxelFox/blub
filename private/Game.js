@@ -31,6 +31,8 @@ class Game {
 			y: 0
 		});
 
+
+
 		this.sessionEvents.push({
 			name: 'spawn',
 			socket: socket,
@@ -86,9 +88,12 @@ class Game {
 
 	getNetGameObjects(isFull) {
 		var go = [];
-		this.gameObjects.forEach(obj => {
-			go.push(obj.toNet(isFull));
-		});
+		var length = this.gameObjects.length;
+
+		for (var i = 0; i < length; i++) {
+			go.push(this.gameObjects[i].toNet(isFull));
+		}
+
 		return go;
 	}
 }

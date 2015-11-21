@@ -13,7 +13,7 @@ class Controller {
 		io.on('connection', (socket) => {
 
 			// send players session id and all gameObjects
-			socket.emit('game:join', this.createJoinPaket(socket.id));
+			socket.emit('game:join', { "data" : this.createJoinPaket(socket.id) });
 
 			// create player
 			this.game.onPlayerConnected(socket);
@@ -51,9 +51,10 @@ class Controller {
 	}
 
 	createJoinPaket(socketID) {
-		var join = this.protoBuilder.Join;
+		var join = new this.protoBuilder.Join();
 		join.sessionID = socketID;
 		join.gos = this.game.getNetGameObjects(true);
+		console.log("  SESSIONID  send: " + join.sessionID);
 		return join.encode().toBuffer();
 	}
 

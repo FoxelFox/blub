@@ -3,7 +3,7 @@ import "GameObject.proto";
 import "Event.proto";
 
 message Join {
-	required uint32 sessionID = 1;
+	required string sessionID = 1;
 	repeated gameObject.GameObject gos = 2;
 }
 

@@ -8,8 +8,9 @@ var protoBuilder = ProtoBuf.loadProtoFile("./shared/Protocol.proto").build();
 app.controller('indexController', function(socket) {
 
 	socket.on('game:join', function(res) {
-		var join = protoBuilder.Join.decode(res);
-		//console.log(res);
+		var join = protoBuilder.Join.decode(res.data);
+		console.log("res: " + res.data);
+		console.log("join.sessionID: " + join.sessionID);
 		//game.onGameJoin(res);
 	});
 

@@ -49,9 +49,9 @@ class Player extends Component {
  */
 function instantiate(options) {
 	return new GameObject([
-		new Component.Color(0x00ff00),
-		new Component.CircleShape(1, [0, 0], 0),
 		new Player(options.sessionID),
+		new Component.Model('player'),
+		new Component.CircleShape(1, [0, 0], 0),
 		new Component.Body({
 			mass: 5,
 			position: [options.x, options.y],

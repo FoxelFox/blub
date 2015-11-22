@@ -29,6 +29,7 @@ function GameObject(pGameObject) {
 	var colorComp;
 	var shapeComps = [];
 	var bodyComp;
+	var modelComp;
 
 	this.fromNet = function (net) {
 		// parse components
@@ -39,6 +40,9 @@ function GameObject(pGameObject) {
 					break;
 				case 'body':
 					bodyComp = comp;
+					break;
+				case 'model':
+					modelComp = comp;
 					break;
 				case 'color':
 					colorComp = comp;
@@ -60,36 +64,38 @@ function GameObject(pGameObject) {
 	// build objects based from components
 	var body = new p2.Body({
 		mass: bodyComp.body.mass,
+		angle: bodyComp.body.angle,
 		position: bodyComp.body.position,
 		damping: 0.99
 	});
-	var geometry;
 	shapeComps.forEach(function (shape) {
 		switch (shape.shapeType) {
 			case 'circle':
-				geometry = new THREE.CircleGeometry(shape.radius, 8);
 				body.addShape(new p2.Circle({
 					radius: shape.radius
 				}));
 				break;
+			case 'plane':
+				body.addShape(new p2.Plane());
 			default:
-				geometry = new THREE.CircleGeometry(1, 8);
 		}
 	});
-	var material = new THREE.MeshBasicMaterial({
-		color: colorComp.color
-	});
+
 
 	// store properties to object
 	this.id = pGameObject.id;
-	this.mesh = new THREE.Mesh(geometry, material);
 	this.body = body;
+	if (modelComp) {
+		var materials = new THREE.MeshFaceMaterial( models[modelComp.model].materials );
+		this.mesh = new THREE.Mesh( models[modelComp.model].geometry, materials );
+	}
 	this.isInitialized = true;
 }
 
 var sessionID;
 var localPlayerID;
 var gameObjects = [];
+var models = {};
 
 function Game() {
 
@@ -107,10 +113,14 @@ function Game() {
 	this.init = function() {
 		scene = new THREE.Scene();
 
+		// fulbright light
+		var light = new THREE.AmbientLight( 0xffffff );
+		scene.add( light );
+
 		var ar = window.innerWidth / window.innerHeight;
 		camera = new THREE.OrthographicCamera(-ar * 16, ar * 16, 16, -16, 0, 100);
 
-		var renderer = new THREE.WebGLRenderer();
+		var renderer = new THREE.WebGLRenderer({antialias : true});
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		// add renderer to DOM
 		document.getElementById('viewport').appendChild(renderer.domElement);
@@ -171,9 +181,33 @@ function Game() {
 		scene.add(grid.meshPlayField);
 	};
 
-	this.onGameJoin = function(res) {
+	this.onPlayerLoad = function(res, onFinish) {
 		sessionID = res.sessionID;
 
+		var loader = new THREE.JSONLoader();
+
+		// async resource checker if all resources loaded
+		var i = 0, onResourceLoaded = () => {
+			if (++i === res.models.length)
+				onFinish();
+		}
+
+		// load rescources async
+		// TODO Check if we can use the same loader instance for all requests
+		res.models.forEach((filePath) => {
+			loader.load(filePath,
+				function ( geometry, materials ) {
+					models[filePath] = {
+						geometry : geometry,
+						materials : materials
+					};
+					onResourceLoaded();
+				}
+			);
+		});
+	};
+
+	this.onJoin = function(res) {
 		// add all gameObjects from server
 		res.gameObjects.forEach(function(go) {
 			addGameObject(go);

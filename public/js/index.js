@@ -5,8 +5,12 @@ window.onload = game.init;
 
 app.controller('indexController', function(socket) {
 
-	socket.on('game:join', function(res) {
-		game.onGameJoin(res);
+	socket.on('player:load', function (res) {
+		game.onPlayerLoad(res, function () {
+			socket.emit('player:join', {}, function (res) {
+				game.onJoin(res);
+			});
+		});
 	});
 
 	socket.on('game:spawn', function(res) {

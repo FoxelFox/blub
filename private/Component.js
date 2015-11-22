@@ -33,6 +33,18 @@ class Component {
 	}
 }
 
+class Model extends Component {
+	constructor(model) {
+		super("model");
+		this.model = 'model/' + model + '.json';
+	}
+
+	toNet(netAccu, isFull) {
+		super.toNet(netAccu, isFull);
+		netAccu.model = this.model;
+	}
+}
+
 class Color extends Component {
 
 	constructor(color) {
@@ -320,6 +332,7 @@ module.exports = Component;
 module.exports.Color = Color;
 module.exports.Body = Body;
 module.exports.Shape = Shape;
+module.exports.Model = Model;
 module.exports.CircleShape = CircleShape;
 module.exports.CapsuleShape = CapsuleShape;
 module.exports.BoxShape = BoxShape;

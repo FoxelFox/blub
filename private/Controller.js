@@ -10,14 +10,22 @@ class Controller {
 	socket(io) {
 		io.on('connection', (socket) => {
 
-			// send players session id and all gameObjects
-			socket.emit('game:join', {
+			// send players session id and all infos for preload
+			socket.emit('player:load', {
 				sessionID: socket.id,
-				gameObjects: this.game.getGameObjects(true)
+				models: [
+					'model/player.json'
+				]
 			});
 
-			// create player
-			this.game.onPlayerConnected(socket);
+			socket.on('player:join', (emptyData, joinCallback) => {
+				// send current game data
+				joinCallback({
+					gameObjects: this.game.getGameObjects(true)
+				});
+				// create the player
+				this.game.onPlayerConnected(socket);
+			});
 
 			socket.on('disconnect', () => {
 				this.game.onPlayerDisconnected(socket.id);

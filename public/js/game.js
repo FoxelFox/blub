@@ -115,7 +115,8 @@ function Game() {
 		}
 	};
 
-	this.serverUpdateMessage = null;
+	game.serverUpdate = null;
+	game.serverEventQueue = [];
 
 	this.init = function() {
 
@@ -167,10 +168,9 @@ function Game() {
 
 		var physics = function() {
 
-			if (game.serverUpdateMessage) {
+			if (game.serverUpdate) {
 				// server has physics update and more
-				game.onServerUpdate(game.serverUpdateMessage);
-				game.serverUpdateMessage = null;
+				game.onServerUpdate();
 			} else {
 				// local physics update
 				world.step(0.0166666666667);
@@ -242,9 +242,16 @@ function Game() {
 		localPlayerID = playerID;
 	};
 
-	this.onServerUpdate = function(updates) {
+	this.addServerUpdate = function (update) {
+		update.globalEvents.forEach(function (event) {
+			game.serverEventQueue.push(event);
+		});
+		game.serverUpdate = update.gameObjects;
+	};
 
-		updates.globalEvents.forEach(function(event) {
+	this.onServerUpdate = function() {
+		var event;
+		while (event = game.serverEventQueue.shift()) {
 			switch (event.name) {
 				case 'addGameObject':
 					addGameObject(event.gameObject);
@@ -253,11 +260,12 @@ function Game() {
 					deleteGameObject(event.gameObjectID);
 					break;
 			}
-		});
+		}
 
-		updates.gameObjects.forEach(function(goUpdate, i) {
+		this.serverUpdate.forEach(function(goUpdate, i) {
 			gameObjects[goUpdate.id].fromNet(goUpdate);
 		});
+		game.serverUpdate = null;
 	};
 
 	this.getLocalPlayerUpdate = function() {

@@ -25,7 +25,7 @@
         "DbgColor": 15658734,
         "specularCoef": 50,
         "wireframe": false,
-        "colorDiffuse": [0.64,0.64,0.64],
+        "colorDiffuse": [1.0,1.0,1.0],
         "depthTest": true,
         "DbgName": "player",
         "transparent": false,

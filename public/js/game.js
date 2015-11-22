@@ -256,7 +256,7 @@ function Game() {
 		});
 
 		updates.gameObjects.forEach(function(goUpdate, i) {
-			gameObjects[i].fromNet(goUpdate);
+			gameObjects[goUpdate.id].fromNet(goUpdate);
 		});
 	};
 
@@ -285,14 +285,12 @@ function Game() {
 	function addGameObject(pGameObject) {
 
 		// duplicate check
-		gameObjects.forEach(function(go) {
-			if (go.id === pGameObject.id) {
-				return;
-			}
-		});
+		if (gameObjects[pGameObject.id]) {
+			return;
+		}
 
 		var obj = new GameObject(pGameObject);
-		gameObjects.push(obj);
+		gameObjects[obj.id] = obj;
 		world.addBody(obj.body);
 		scene.add(obj.mesh);
 	}
@@ -300,7 +298,6 @@ function Game() {
 	function deleteGameObject(id) {
 		world.removeBody(gameObjects[id].body);
 		scene.remove(gameObjects[id].mesh);
-		// todo scene remove
 		delete gameObjects[id];
 	}
 }

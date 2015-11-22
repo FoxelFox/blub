@@ -217,7 +217,7 @@ class CircleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shape.shapeType = "CIRCLE";
+		netAccu.shapeType = "circle";
 		var self = this;
 		netAccu.shape.circle = {
 			"radius": self._radius
@@ -266,7 +266,7 @@ class CapsuleShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shapeType = "CAPSULE";
+		netAccu.shapeType = "capsule";
 		var self = this;
 		netAccu.shape.circle = {
 			"radius": self._radius,
@@ -323,7 +323,7 @@ class PlaneShape extends Shape {
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.shape.shapeType = "PLANE";
+		netAccu.shapeType = "plane";
 	}
 }
 //Component.registerClass(PlaneShape);

@@ -1,3 +1,9 @@
 canvas {
 	position: absolute;
 }
+
+.chat-log {
+	overflow-y: auto;
+	word-wrap: break-word;
+	height: 5em;
+}

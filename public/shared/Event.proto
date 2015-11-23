@@ -1,10 +1,6 @@
 syntax = "proto3";
 package event;
 
-message EventList {
-	repeated Event events = 1;
-}
-
 message Event {
 	required EventType type = 1;
 	oneof event_data {

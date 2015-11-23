@@ -59,20 +59,20 @@ class Controller {
 		var load = new this.protoBuilder.Load();
 		load.sessionID = socketID;
 		load.models = [ 'model/player.json' ];
-		return { data : load.encode().toBuffer(); };
+		return { data : load.encode().toBuffer() };
 	}
 
 	createJoinPaket() {
 		var join = new this.protoBuilder.Join();
 		join.gos = this.game.getNetGameObjects(true);
-		return { data : join.encode().toBuffer(); };
+		return { data : join.encode().toBuffer() };
 	}
 
 	createUpdatePaket() {
 		var update = new this.protoBuilder.Update();
 		update.gos = this.game.getNetGameObjects(false);
-		update.events = this.game.globalEvents;
-		return { data : update.encode().toBuffer(); };
+		//update.events = this.game.globalEvents; // TODO: Events for protobuffers fix
+		return { data : update.encode().toBuffer() };
 	}
 
 }

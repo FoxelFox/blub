@@ -13,5 +13,5 @@ message Join {
 
 message Update {
 	repeated gameObject.GameObject gos = 1;
-	optional event.EventList events = 2;
+	repeated event.Event events = 2;
 }

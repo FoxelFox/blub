@@ -233,7 +233,7 @@ function Game() {
 
 	this.onJoin = function(res) {
 		// add all gameObjects from server
-		res.gameObjects.forEach(function(go) {
+		res.gos.forEach(function(go) {
 			addGameObject(go);
 		});
 	};

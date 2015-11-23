@@ -1,9 +1,6 @@
 syntax = "proto3";
 package gameObject;
-
-message UpdateResponse {
-	repeated GameObject go = 1;
-}
+import "Component.proto";
 
 message GameObject {
     required uint32 id = 1;

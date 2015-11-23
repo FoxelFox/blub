@@ -1,9 +1,11 @@
 'use strict';
 var Game = require('./Game');
+var ProtoBuf = require('protobufjs');
 
 class Controller {
 	constructor(io) {
 		this.game = new Game();
+		this.initProtoBuf();
 		this.socket(io);
 	}
 
@@ -11,27 +13,21 @@ class Controller {
 		io.on('connection', (socket) => {
 
 			// send players session id and all infos for preload
-			socket.emit('player:load', {
-				sessionID: socket.id,
-				models: [
-					'model/player.json'
-				]
-			});
+			socket.emit('player:load', createLoadPaket(socket.id));
 
+			// send player all gameObjects
 			socket.on('player:join', (emptyData, joinCallback) => {
 				// send current game data
-				joinCallback({
-					gameObjects: this.game.getGameObjects(true)
-				});
+				joinCallback(createJoinPaket());
 				// create the player
 				this.game.onPlayerConnected(socket);
 			});
 
-			socket.on('disconnect', () => {
+			socket.on('game:quit', () => {
 				this.game.onPlayerDisconnected(socket.id);
 			});
 
-			socket.on('chat message', (msg) => {
+			socket.on('chat:message', (msg) => {
 				io.emit('chat log', msg);
 			});
 
@@ -43,12 +39,7 @@ class Controller {
 		setInterval(() => {
 			this.game.update();
 
-			var update = {
-				gameObjects: this.game.getGameObjects(false),
-				globalEvents: this.game.globalEvents
-			};
-
-			io.emit('server:update', JSON.stringify(update));
+			io.emit('server:update', this.createUpdatePaket());
 
 			this.game.sessionEvents.forEach((sEvent) => {
 				sEvent.socket.emit('game:spawn', sEvent.gameObjectID);
@@ -59,6 +50,31 @@ class Controller {
 			this.game.globalEvents = [];
 		}, 50);
 	}
+
+	initProtoBuf() {
+		this.protoBuilder = ProtoBuf.loadProtoFile(__dirname+"/../public/shared/Protocol.proto").build();
+	}
+
+	createLoadPaket(socketID) {
+		var load = new this.protoBuilder.Load();
+		load.sessionID = socketID;
+		load.models = [ 'model/player.json' ];
+		return { data : load.encode().toBuffer(); };
+	}
+
+	createJoinPaket() {
+		var join = new this.protoBuilder.Join();
+		join.gos = this.game.getNetGameObjects(true);
+		return { data : join.encode().toBuffer(); };
+	}
+
+	createUpdatePaket() {
+		var update = new this.protoBuilder.Update();
+		update.gos = this.game.getNetGameObjects(false);
+		update.events = this.game.globalEvents;
+		return { data : update.encode().toBuffer(); };
+	}
+
 }
 
 module.exports = Controller;

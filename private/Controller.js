@@ -1,6 +1,7 @@
 'use strict';
 var Game = require('./Game');
 var ProtoBuf = require('protobufjs');
+var useProtoBuf = false;
 
 class Controller {
 	constructor(io) {
@@ -23,7 +24,7 @@ class Controller {
 				this.game.onPlayerConnected(socket);
 			});
 
-			socket.on('game:quit', () => {
+			socket.on('disconnect', () => {
 				this.game.onPlayerDisconnected(socket.id);
 			});
 
@@ -38,7 +39,6 @@ class Controller {
 
 		setInterval(() => {
 			this.game.update();
-
 			io.emit('server:update', this.createUpdatePaket());
 
 			this.game.sessionEvents.forEach((sEvent) => {
@@ -56,25 +56,50 @@ class Controller {
 	}
 
 	createLoadPaket(socketID) {
-		var load = new this.protoBuilder.Load();
-		load.sessionID = socketID;
-		load.models = [ 'model/player.json' ];
-		return { data : load.encode().toBuffer() };
+		if (useProtoBuf) {
+			var load = new this.protoBuilder.Load();
+			load.sessionID = socketID;
+			load.models = [ 'model/player.json' ];
+			return { data : load.encode().toBuffer() };
+		} else {
+			return JSON.stringify({
+				data : {
+					sessionID: socketID,
+					models: [ 'model/player.json' ]
+				}
+			});
+		}
 	}
 
 	createJoinPaket() {
-		var join = new this.protoBuilder.Join();
-		join.gos = this.game.getNetGameObjects(true);
-		return { data : join.encode().toBuffer() };
+		if (useProtoBuf) {
+			var join = new this.protoBuilder.Join();
+			join.gos = this.game.getNetGameObjects(true);
+			return { data : join.encode().toBuffer() };
+		} else {
+			return JSON.stringify({
+				data : {
+					gos: this.game.getNetGameObjects(true)
+				}
+			});
+		}
 	}
 
 	createUpdatePaket() {
-		var update = new this.protoBuilder.Update();
-		update.gos = this.game.getNetGameObjects(false);
-		//update.events = this.game.globalEvents; // TODO: Events for protobuffers fix
-		return { data : update.encode().toBuffer() };
+		if (useProtoBuf) {
+			var update = new this.protoBuilder.Update();
+			update.gos = this.game.getNetGameObjects(false);
+			//update.events = this.game.globalEvents; // TODO: Events for protobuffers fix
+			return { data : update.encode().toBuffer() };
+		} else {
+			return JSON.stringify({
+				data : {
+					gos: this.game.getNetGameObjects(false),
+					globalEvents: this.game.globalEvents
+				}
+			});
+		}
 	}
-
 }
 
 module.exports = Controller;

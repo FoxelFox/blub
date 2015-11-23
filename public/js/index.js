@@ -4,20 +4,35 @@ var game = new Game();
 window.onload = game.init;
 var ProtoBuf = dcodeIO.ProtoBuf;
 var protoBuilder = ProtoBuf.loadProtoFile("./shared/Protocol.proto").build();
+var useProtoBuf = false;
 
 app.controller('indexController', function(socket) {
 
 	socket.on('player:load', function (res) {
-		var data = protoBuilder.Load.decode(res.data);
+		var data
+		if (useProtoBuf) {
+			data = protoBuilder.Load.decode(res.data);
+		} else {
+			data = JSON.parse(res).data;
+		}
+
 		game.onPlayerLoad(data, function () {
 			socket.emit('player:join', {}, function (res) {
-				game.onJoin(protoBuilder.Join.decode(res.data));
+				if (useProtoBuf) {
+					game.onJoin(protoBuilder.Join.decode(res.data));
+				} else {
+					game.onJoin(JSON.parse(res).data);
+				}
 			});
 		});
 	});
 
 	socket.on('game:join', function(res) {
-		game.onGameJoin(protoBuilder.Join.decode(res.data));
+		if (useProtoBuf) {
+			game.onGameJoin(protoBuilder.Join.decode(res.data));
+		} else {
+			game.onGameJoin(JSON.parse(res).data);
+		}
 	});
 
 	socket.on('game:spawn', function(res) {
@@ -25,7 +40,11 @@ app.controller('indexController', function(socket) {
 	});
 
 	socket.on('server:update', function(res) {
-		game.onServerUpdate(protoBuilder.Update.decode(res.data));
+		if (useProtoBuf) {
+			game.addServerUpdate(protoBuilder.Update.decode(res.data));
+		} else {
+			game.addServerUpdate(JSON.parse(res).data);
+		}
 		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
 });

@@ -86,8 +86,8 @@ function GameObject(pGameObject) {
 	this.id = pGameObject.id;
 	this.body = body;
 	if (modelComp) {
-		var materials = new THREE.MeshFaceMaterial( models[modelComp.model].materials );
-		this.mesh = new THREE.Mesh( models[modelComp.model].geometry, materials );
+		var materials = new THREE.MeshFaceMaterial( models[modelComp.model.path].materials );
+		this.mesh = new THREE.Mesh( models[modelComp.model.path].geometry, materials );
 	}
 	this.isInitialized = true;
 }
@@ -244,9 +244,10 @@ function Game() {
 
 	this.addServerUpdate = function (update) {
 		update.globalEvents.forEach(function (event) {
+			console.log(event);
 			game.serverEventQueue.push(event);
 		});
-		game.serverUpdate = update.gameObjects;
+		game.serverUpdate = update.gos;
 	};
 
 	this.onServerUpdate = function() {

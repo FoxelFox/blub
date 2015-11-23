@@ -52,8 +52,9 @@ class Game {
 
 	onPlayerUpdate(update) {
 		// just update controls
-		if (this.players[update.sessionID])
+		if (this.players[update.sessionID]) {
 			this.players[update.sessionID].getComponent('player').controls = update.controls;
+		}
 	}
 
 	addGameObject(gameObject) {

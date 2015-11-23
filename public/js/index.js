@@ -8,10 +8,7 @@ var protoBuilder = ProtoBuf.loadProtoFile("./shared/Protocol.proto").build();
 app.controller('indexController', function(socket) {
 
 	socket.on('game:join', function(res) {
-		var join = protoBuilder.Join.decode(res.data);
-		console.log("res: " + res.data);
-		console.log("join.sessionID: " + join.sessionID);
-		//game.onGameJoin(res);
+		game.onGameJoin(protoBuilder.Join.decode(res.data));
 	});
 
 	socket.on('game:spawn', function(res) {
@@ -19,11 +16,9 @@ app.controller('indexController', function(socket) {
 	});
 
 	socket.on('server:update', function(res) {
-		//var update = protoBuilder.Update.decode(res);
-		//console.log(update);
-
-		//game.onServerUpdate(JSON.parse(res));
-		//socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
+		var update = protoBuilder.Update.decode(res.data);
+		game.onServerUpdate(res);
+		socket.emit('player:update', JSON.stringify(game.getLocalPlayerUpdate()));
 	});
 
 });

@@ -141,7 +141,7 @@ function Game() {
 		sessionID = res.sessionID;
 
 		// add all gameObjects from server
-		res.gameObjects.forEach(function(go) {
+		res.gos.forEach(function(go) {
 			addGameObject(go);
 		});
 	};

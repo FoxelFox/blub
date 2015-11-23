@@ -54,12 +54,11 @@ class Controller {
 		var join = new this.protoBuilder.Join();
 		join.sessionID = socketID;
 		join.gos = this.game.getNetGameObjects(true);
-		console.log("  SESSIONID  send: " + join.sessionID);
 		return join.encode().toBuffer();
 	}
 
 	createUpdatePaket() {
-		var update = this.protoBuilder.Update;
+		var update = new this.protoBuilder.Update();
 		update.gos = this.game.getNetGameObjects(false);
 		update.events = this.game.globalEvents;
 		return update.encode().toBuffer();

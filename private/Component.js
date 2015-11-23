@@ -34,49 +34,18 @@ class Component {
 }
 
 class Model extends Component {
-	constructor(model) {
+	constructor(path) {
 		super("model");
-		this.model = 'model/' + model + '.json';
+		this.path = 'model/' + path + '.json';
 	}
 
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
-		netAccu.model = this.model;
+		netAccu.model = {
+			path : this.path
+		};
 	}
 }
-
-class Color extends Component {
-
-	constructor(color) {
-		super("color");
-		this._color = color;
-	}
-
-	get color() {
-		return this._color;
-	}
-
-	set color(color) {
-		this._color = color;
-		super.setDirty();
-	}
-
-	toNet(netAccu, isFull) {
-		super.toNet(netAccu, isFull);
-		var self = this;
-		netAccu.color = self.color;
-	}
-
-	//fromNet(netComponent) {
-	//	this._color = netComponent.color;
-	//}
-
-	//static fromNet(gameObject, netComponent) {
-	//	var comp = new Color(netComponent.color);
-	//	gameObject.addComponent(comp);
-	//}
-}
-//Component.registerClass(Color);
 
 class Body extends Component {
 	constructor(bodyOptions) {
@@ -218,9 +187,8 @@ class CircleShape extends Shape {
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
 		netAccu.shapeType = "circle";
-		var self = this;
 		netAccu.shape.circle = {
-			"radius": self._radius
+			"radius": this._radius
 		};
 	}
 
@@ -267,14 +235,12 @@ class CapsuleShape extends Shape {
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
 		netAccu.shapeType = "capsule";
-		var self = this;
-		netAccu.shape.circle = {
-			"radius": self._radius,
-			"length": self._length
+		netAccu.shape.capsule = {
+			"radius": this._radius,
+			"length": this._length
 		};
 	}
 }
-//Component.registerClass(CapsuleShape);
 
 class BoxShape extends Shape {
 	constructor(width, height, offset, angle) {
@@ -310,8 +276,10 @@ class BoxShape extends Shape {
 	toNet(netAccu, isFull) {
 		super.toNet(netAccu, isFull);
 		netAccu.shapeType = "box";
-		netAccu.width = this._width;
-		netAccu.height = this._height;
+		netAccu.box = {
+			width : this._width,
+			height : this._height
+		};
 	}
 }
 //Component.registerClass(BoxShape);
@@ -329,7 +297,6 @@ class PlaneShape extends Shape {
 //Component.registerClass(PlaneShape);
 
 module.exports = Component;
-module.exports.Color = Color;
 module.exports.Body = Body;
 module.exports.Shape = Shape;
 module.exports.Model = Model;

@@ -13,12 +13,12 @@ class Controller {
 		io.on('connection', (socket) => {
 
 			// send players session id and all infos for preload
-			socket.emit('player:load', createLoadPaket(socket.id));
+			socket.emit('player:load', this.createLoadPaket(socket.id));
 
 			// send player all gameObjects
 			socket.on('player:join', (emptyData, joinCallback) => {
 				// send current game data
-				joinCallback(createJoinPaket());
+				joinCallback(this.createJoinPaket());
 				// create the player
 				this.game.onPlayerConnected(socket);
 			});

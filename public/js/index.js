@@ -4,7 +4,7 @@ var game = new Game();
 window.onload = game.init;
 var ProtoBuf = dcodeIO.ProtoBuf;
 var protoBuilder = ProtoBuf.loadProtoFile("./shared/Protocol.proto").build();
-var useProtoBuf = false;
+var useProtoBuf = true;
 
 app.controller('indexController', function(socket) {
 

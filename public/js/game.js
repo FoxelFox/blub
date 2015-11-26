@@ -54,8 +54,8 @@ function GameObject(pGameObject) {
 			return; // object is not fully created
 
 		// update
-		body.position = bodyComp.body.position || body.position;
-		body.velocity = bodyComp.body.velocity || body.velocity;
+		body.position = [bodyComp.body.position.x, bodyComp.body.position.y]  || body.position;
+		body.velocity = [bodyComp.body.velocity.x, bodyComp.body.velocity.y]  || body.velocity;
 		body.force = bodyComp.body.force || body.force;
 	};
 
@@ -255,10 +255,10 @@ function Game() {
 		while (event = game.serverEventQueue.shift()) {
 			switch (event.name) {
 				case 'addGameObject':
-					addGameObject(event.gameObject);
+					addGameObject(event.goAdd.go);
 					break;
 				case 'removeGameObject':
-					deleteGameObject(event.gameObjectID);
+					deleteGameObject(event.goDelete.goID);
 					break;
 			}
 		}

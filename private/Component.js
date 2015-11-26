@@ -76,9 +76,9 @@ class Body extends Component {
 		super.toNet(netAccu, isFull);
 		var self = this;
 		netAccu.body = {
-			"position": self.body.position,
+			"position": { x : self.body.position[0], y : self.body.position[1] },
 			//"force" : this.body.force,
-			"velocity": self.body.velocity,
+			"velocity": { x : self.body.velocity[0], y : self.body.velocity[1] },
 
 			"angle": self.body.angle,
 			//"angularForce" : this.body.angularForce,

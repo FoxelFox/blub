@@ -1,7 +1,7 @@
 'use strict';
 var Game = require('./Game');
 var ProtoBuf = require('protobufjs');
-var useProtoBuf = false;
+var useProtoBuf = true;
 
 class Controller {
 	constructor(io) {
@@ -75,6 +75,7 @@ class Controller {
 		if (useProtoBuf) {
 			var join = new this.protoBuilder.Join();
 			join.gos = this.game.getNetGameObjects(true);
+			console.log(" JOIN DONE");
 			return { data : join.encode().toBuffer() };
 		} else {
 			return JSON.stringify({
@@ -89,8 +90,12 @@ class Controller {
 		if (useProtoBuf) {
 			var update = new this.protoBuilder.Update();
 			update.gos = this.game.getNetGameObjects(false);
-			//update.events = this.game.globalEvents; // TODO: Events for protobuffers fix
-			return { data : update.encode().toBuffer() };
+			update.events = this.game.globalEvents;
+			console.log(" UPDATE BEGIN");
+			console.log(" INHALT: " + JSON.stringify(this.game.globalEvents));
+			var data = { data : update.encode().toBuffer() };
+			console.log(" UPDATE DONE");
+			return data;
 		} else {
 			return JSON.stringify({
 				data : {

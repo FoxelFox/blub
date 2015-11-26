@@ -1,18 +1,25 @@
 syntax = "proto3";
+import "GameObject.proto";
 package event;
 
 message Event {
-	required EventType type = 1;
+	required EventType name = 1;
 	oneof event_data {
-		GoDelete goDelete = 2;
+		GoAdd goAdd = 2;
+		GoDelete goDelete = 3;
 	}
 }
 
 enum EventType {
-	GO_DELETE = 0;
+	addGameObject = 0;
+	removeGameObject = 1;
 }
 
 // Event Data Messages
+message GoAdd {
+	required gameObject.GameObject go = 1;
+}
+
 message GoDelete {
 	required uint32 goID = 1;
 }

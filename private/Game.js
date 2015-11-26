@@ -68,7 +68,9 @@ class Game {
 
 		this.globalEvents.push({
 			name: 'addGameObject',
-			gameObject: gameObject.toNet(false)
+			goAdd: {
+				go : gameObject.toNet(false)
+			}
 		});
 	}
 
@@ -84,8 +86,10 @@ class Game {
 		this.gameObjects.splice(this.gameObjects.indexOf(gameObject), 1);
 
 		this.globalEvents.push({
-			name: 'removeGameObject',
-			gameObjectID: gameObject.id
+			name : 'removeGameObject',
+			goDelete: {
+				goID : gameObject.id
+			}
 		});
 	}
 

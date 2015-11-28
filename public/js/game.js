@@ -77,6 +77,7 @@ function GameObject(pGameObject) {
 				break;
 			case 'plane':
 				body.addShape(new p2.Plane());
+				break;
 			default:
 		}
 	});
@@ -211,14 +212,14 @@ function Game() {
 		var loader = new THREE.JSONLoader();
 
 		// async resource checker if all resources loaded
-		var i = 0, onResourceLoaded = () => {
+		var i = 0, onResourceLoaded = function () {
 			if (++i === res.models.length)
 				onFinish();
-		}
+		};
 
 		// load rescources async
 		// TODO Check if we can use the same loader instance for all requests
-		res.models.forEach((filePath) => {
+		res.models.forEach(function (filePath) {
 			loader.load(filePath,
 				function ( geometry, materials ) {
 					models[filePath] = {
@@ -252,7 +253,7 @@ function Game() {
 
 	this.onServerUpdate = function() {
 		var event;
-		while (event = game.serverEventQueue.shift()) {
+		while ((event = game.serverEventQueue.shift())) {
 			switch (event.name) {
 				case 'addGameObject':
 					addGameObject(event.gameObject);

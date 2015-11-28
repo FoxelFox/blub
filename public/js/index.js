@@ -9,7 +9,7 @@ var useProtoBuf = false;
 app.controller('indexController', function(socket) {
 
 	socket.on('player:load', function (res) {
-		var data
+		var data;
 		if (useProtoBuf) {
 			data = protoBuilder.Load.decode(res.data);
 		} else {

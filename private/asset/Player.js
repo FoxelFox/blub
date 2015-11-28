@@ -9,12 +9,16 @@ class Player extends Component {
 		super('player');
 		this.sessionID = sessionID;
 
-		this.controls = {
-			up: false,
-			down: false,
-			left: false,
-			right: false
-		};
+        this.controls = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            mouse: {
+                rel: [0, 0],
+                abs: [0, 0]
+            }
+        };
 	}
 
 	update() {

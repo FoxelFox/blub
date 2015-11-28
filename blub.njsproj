@@ -25,6 +25,7 @@
     <Compile Include="private\Controller.js" />
     <Compile Include="private\Game.js" />
     <Compile Include="private\GameObject.js" />
+    <Compile Include="public\js\input.js" />
     <Compile Include="test\Player.js" />
     <Compile Include="private\asset\Player.js" />
     <Compile Include="private\asset\Playfield.js" />

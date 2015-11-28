@@ -19,7 +19,7 @@ function Grid(world, width, height) {
 	this.borderBody.addShape(new p2.Plane(), [0, height / 2], Math.PI);
 	this.borderBody.addShape(new p2.Plane(), [0, -height / 2], 0);
 	this.borderBody.addShape(new p2.Plane(), [height / 2, 0], Math.PI / 2);
-	this.borderBody.addShape(new p2.Plane(), [-height / 2, 0], -Math.PI / 2);
+    this.borderBody.addShape(new p2.Plane(), [-height / 2, 0], -Math.PI / 2);
 	world.addBody(this.borderBody);
 }
 
@@ -56,7 +56,7 @@ function GameObject(pGameObject) {
 		// update
 		body.position = bodyComp.body.position || body.position;
 		body.velocity = bodyComp.body.velocity || body.velocity;
-		body.force = bodyComp.body.force || body.force;
+        body.force = bodyComp.body.force || body.force;
 	};
 
 	this.fromNet(pGameObject);
@@ -105,24 +105,12 @@ function Game() {
 	var world = new p2.World({
 		gravity: [0.0, 0.0]
 	});
-	var controls = {
-		up: false,
-		down: false,
-		left: false,
-		right: false,
-		mouse: {
-			rel: [0,0],
-			abs: [0,0]
-		}
-	};
+
 
 	game.serverUpdate = null;
 	game.serverEventQueue = [];
 
 	this.init = function() {
-
-		// set event listener for mouse movement
-		window.onmousemove = setMouseRel;
 
 		scene = new THREE.Scene();
 
@@ -138,34 +126,6 @@ function Game() {
 		// add renderer to DOM
 		document.getElementById('viewport').appendChild(renderer.domElement);
 		camera.position.z = 5;
-
-		controls.up = false;
-		keyboardJS.bind('w', function(e) {
-			controls.up = true;
-		}, function(e) {
-			controls.up = false;
-		});
-
-		controls.down = false;
-		keyboardJS.bind('s', function(e) {
-			controls.down = true;
-		}, function(e) {
-			controls.down = false;
-		});
-
-		controls.left = false;
-		keyboardJS.bind('a', function(e) {
-			controls.left = true;
-		}, function(e) {
-			controls.left = false;
-		});
-
-		controls.right = false;
-		keyboardJS.bind('d', function(e) {
-			controls.right = true;
-		}, function(e) {
-			controls.right = false;
-		});
 
 		var physics = function() {
 
@@ -191,7 +151,7 @@ function Game() {
 				}
 			});
 
-			setMouseAbs();
+            Input.update(camera);
 		};
 
 		var render = function() {
@@ -271,26 +231,11 @@ function Game() {
 	};
 
 	this.getLocalPlayerUpdate = function() {
-
 		return {
 			sessionID: sessionID,
-			controls: controls
+			controls: Input
 		};
 	};
-
-	function setMouseRel (event) {
-		controls.mouse.rel = [(event.clientX / window.innerWidth) * 2 - 1,  - ( event.clientY / window.innerHeight ) * 2 + 1];
-	}
-
-	function setMouseAbs () {
-		var vector = new THREE.Vector3();
-		vector.set(controls.mouse.rel[0], controls.mouse.rel[1], 0.5 );
-		vector.unproject(camera);
-		var dir = vector.sub(camera.position).normalize();
-		var distance = - camera.position.z / dir.z;
-		var pos = camera.position.clone().add(dir.multiplyScalar(distance));
-		controls.mouse.abs = [pos.x,pos.y];
-	}
 
 	function addGameObject(pGameObject) {
 

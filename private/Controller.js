@@ -47,7 +47,7 @@ class Controller {
 
 			// clear events
 			this.game.sessionEvents = [];
-			this.game.globalEvents = [];
+            this.game.globalEvents = [];
 		}, 50);
 	}
 

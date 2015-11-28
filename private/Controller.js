@@ -52,20 +52,22 @@ class Controller {
 	}
 
 	initProtoBuf() {
-		this.protoBuilder = ProtoBuf.loadProtoFile(__dirname+"/../public/shared/Protocol.proto").build();
+		this.protoBuilder = ProtoBuf.loadProtoFile(__dirname + "/../public/shared/Protocol.proto").build();
 	}
 
 	createLoadPaket(socketID) {
 		if (useProtoBuf) {
 			var load = new this.protoBuilder.Load();
 			load.sessionID = socketID;
-			load.models = [ 'model/player.json' ];
-			return { data : load.encode().toBuffer() };
+			load.models = ['model/player.json'];
+			return {
+				data: load.encode().toBuffer()
+			};
 		} else {
 			return JSON.stringify({
-				data : {
+				data: {
 					sessionID: socketID,
-					models: [ 'model/player.json' ]
+					models: ['model/player.json']
 				}
 			});
 		}
@@ -75,10 +77,12 @@ class Controller {
 		if (useProtoBuf) {
 			var join = new this.protoBuilder.Join();
 			join.gos = this.game.getNetGameObjects(true);
-			return { data : join.encode().toBuffer() };
+			return {
+				data: join.encode().toBuffer()
+			};
 		} else {
 			return JSON.stringify({
-				data : {
+				data: {
 					gos: this.game.getNetGameObjects(true)
 				}
 			});
@@ -90,10 +94,12 @@ class Controller {
 			var update = new this.protoBuilder.Update();
 			update.gos = this.game.getNetGameObjects(false);
 			//update.events = this.game.globalEvents; // TODO: Events for protobuffers fix
-			return { data : update.encode().toBuffer() };
+			return {
+				data: update.encode().toBuffer()
+			};
 		} else {
 			return JSON.stringify({
-				data : {
+				data: {
 					gos: this.game.getNetGameObjects(false),
 					globalEvents: this.game.globalEvents
 				}

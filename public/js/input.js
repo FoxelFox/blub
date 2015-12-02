@@ -6,8 +6,9 @@ var Input = new function () {
     self.left = false,
     self.right = false,
     self.mouse = {
-        rel: [0, 0],
-        abs: [0, 0]
+        btn: [false, false, false], // mouse buttons left midle right clicks
+        rel: [0, 0],                // relative position
+        abs: [0, 0]                 // absolute position
     };
                            
     keyboardJS.bind('w', function (e) {
@@ -49,5 +50,15 @@ var Input = new function () {
         self.mouse.rel = [(event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1];
     };
 
+    self.onMouseDown = function (event) {
+        self.btn[event.button] = true;
+    };
+
+    self.onMouseUp = function (event) {
+        self.btn[event.button] = false;
+    };
+
     window.onmousemove = self.onMouseMove;
+    window.onmousedown = self.onMouseDown;
+    window.onmouseup = self.onmouseup;
 }

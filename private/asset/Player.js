@@ -15,8 +15,9 @@ class Player extends Component {
             left: false,
             right: false,
             mouse: {
-                rel: [0, 0],
-                abs: [0, 0]
+                btn: [false, false, false], // mouse buttons left midle right clicks
+                rel: [0, 0],                // relative position
+                abs: [0, 0]                 // absolute position
             }
         };
 	}

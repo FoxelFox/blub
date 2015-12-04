@@ -1002,3 +1002,7 @@ declare module p2 {
     }
 
 }
+
+declare module 'p2' {
+    export = p2;
+}

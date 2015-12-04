@@ -1,7 +1,7 @@
-﻿import GameObject = require('./GameObjectNew');
+﻿import p2 = require('p2');
+import GameObject = require('./GameObjectNew');
 import player = require('./asset/PlayerNew');
-///<reference path="p2"/>
-import p2 = require('./p2');
+
 
 class Game {
 

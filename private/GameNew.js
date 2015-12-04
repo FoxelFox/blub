@@ -1,5 +1,4 @@
-///<reference path="p2"/>
-var p2 = require('./p2');
+var p2 = require('p2');
 var Game = (function () {
     function Game() {
         this.gameObjects = [];

@@ -1,10 +1,14 @@
 ﻿// local user input as globaly accessable instance
 var Input = new function () {
     var self = this;
-    self.up = false,
-    self.down = false,
-    self.left = false,
-    self.right = false,
+    
+    self.key = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    };
+    
     self.mouse = {
         btn: [false, false, false], // mouse buttons left midle right clicks
         rel: [0, 0],                // relative position
@@ -12,27 +16,27 @@ var Input = new function () {
     };
                            
     keyboardJS.bind('w', function (e) {
-        self.up = true;
+        self.key.up = true;
     }, function (e) {
-        self.up = false;
+        self.key.up = false;
     });
     
     keyboardJS.bind('s', function (e) {
-        self.down = true;
+        self.key.down = true;
     }, function (e) {
-        self.down = false;
+        self.key.down = false;
     });
     
     keyboardJS.bind('a', function (e) {
-        self.left = true;
+        self.key.left = true;
     }, function (e) {
-        Input.left = false;
+        self.key.left = false;
     });
     
     keyboardJS.bind('d', function (e) {
-        self.right = true;
+        self.key.right = true;
     }, function (e) {
-        self.right = false;
+        self.key.right = false;
     });
 
 
@@ -51,12 +55,19 @@ var Input = new function () {
     };
 
     self.onMouseDown = function (event) {
-        self.btn[event.button] = true;
+        self.mouse.btn[event.button] = true;
     };
 
     self.onMouseUp = function (event) {
-        self.btn[event.button] = false;
+        self.mouse.btn[event.button] = false;
     };
+    
+    self.toNet = function () {
+        return {
+            key: self.key,
+            mouse: self.mouse
+        };
+    }
 
     window.onmousemove = self.onMouseMove;
     window.onmousedown = self.onMouseDown;

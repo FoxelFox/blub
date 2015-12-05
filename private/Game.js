@@ -53,7 +53,7 @@ class Game {
 	onPlayerUpdate(update) {
 		// just update controls
 		if (this.players[update.sessionID]) {
-			this.players[update.sessionID].getComponent('player').controls = update.controls;
+			this.players[update.sessionID].getComponent('player').input = update.input;
 		}
 	}
 

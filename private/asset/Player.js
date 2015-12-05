@@ -3,46 +3,82 @@ var GameObject = require('../GameObject');
 var Component = require('../Component');
 var p2 = require('p2');
 
+class Button {
+
+    constructor() {
+        this.isPressed = false;
+        this.isNewPressed = false;
+    }
+
+    set pressed(value) {
+        this.isNewPressed = value;
+        if (this.isPressed && value)
+            this.isNewPressed = false;
+        this.isPressed = value;
+    }
+    
+    get pressed() {
+        return this.isPressed;
+    }
+
+    get newPressed() {
+        return this.isNewPressed;
+    }    
+
+}
 class Player extends Component {
 
 	constructor(sessionID) {
 		super('player');
 		this.sessionID = sessionID;
 
-        this.controls = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            mouse: {
-                btn: [false, false, false], // mouse buttons left midle right clicks
-                rel: [0, 0],                // relative position
-                abs: [0, 0]                 // absolute position
-            }
+        this.key = {
+            up: new Button(),
+            down: new Button(),
+            left: new Button(),
+            right: new Button()
         };
+
+        this.mouse = {            
+            btn: [new Button(), new Button(), new Button()], // mouse buttons left midle right clicks
+            rel: [0, 0],                                     // relative position
+            abs: [0, 0]                                      // absolute position
+        }
 	}
 
 	update() {
 		var body = this.gameObject.getComponent('body').body;
 		var force = p2.vec2.fromValues(0, 0);
 
-		if (this.controls.up) {
+        if (this.key.up.pressed) {
 			p2.vec2.add(force, force, p2.vec2.fromValues(0, +1));
 		}
-		if (this.controls.down) {
+        if (this.key.down.pressed) {
 			p2.vec2.add(force, force, p2.vec2.fromValues(0, -1));
 		}
-		if (this.controls.left) {
+        if (this.key.left.pressed) {
 			p2.vec2.add(force, force, p2.vec2.fromValues(-1, 0));
 		}
-		if (this.controls.right) {
+        if (this.key.right.pressed) {
 			p2.vec2.add(force, force, p2.vec2.fromValues(+1, 0));
 		}
 		p2.vec2.normalize(force, force);
 		p2.vec2.multiply(force, force, p2.vec2.fromValues(+200, +200));
 
 		p2.vec2.add(body.force, body.force, force);
-	}
+    }
+
+    set input(input) {
+        Object.keys(input.key).forEach(k => {
+            this.key[k].pressed = input.key[k];
+        });
+        
+        this.mouse.btn[0].pressed = input.mouse.btn[0];
+        this.mouse.btn[1].pressed = input.mouse.btn[1];
+        this.mouse.btn[2].pressed = input.mouse.btn[2];
+        this.mouse.rel = input.mouse.rel;
+        this.mouse.abs = input.mouse.abs;
+    }
 }
 
 

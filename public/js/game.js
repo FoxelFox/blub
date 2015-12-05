@@ -233,7 +233,7 @@ function Game() {
 	this.getLocalPlayerUpdate = function() {
 		return {
 			sessionID: sessionID,
-			controls: Input
+			input: Input.toNet()
 		};
 	};
 

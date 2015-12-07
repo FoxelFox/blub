@@ -2,7 +2,6 @@
 import GameObject = require('./GameObjectNew');
 import player = require('./asset/PlayerNew');
 
-
 class Game {
 
     gameObjects: GameObject[] = [];
@@ -15,30 +14,34 @@ class Game {
     });
 
     constructor() {
+        // Game Startup code here...
+        console.log('start');
     }
 
     update() {
-        for (var go in this.gameObjects) {
+        for (var go of this.gameObjects) {
             go.update();
         }
         this.world.step(0.05);
     }
 
-    onPlayerConnected(socket) {
-        var player = player.instantiatePlayer({
-            sessionID: socket.id,
-            x: 0,
-            y: 0
-        });
+    onPlayerConnected(socket: SocketIO.Socket) {
+        console.log("connect:");
+        console.log("id:" + socket.id);
+
+        var id: string = socket.id;
+        var cPlayer = player.instantiate(id, 0, 0);
+
+        console.log("player:" + cPlayer);
 
         this.sessionEvents.push({
             name: 'spawn',
             socket: socket,
-            gameObjectID: player.id
+            gameObjectID: cPlayer.id
         });
 
-        this.players[socket.id] = player;
-        this.addGameObject(player);
+        this.players[socket.id] = cPlayer;
+        this.addGameObject(cPlayer);
     }
 
     onPlayerDisconnected(sessionID) {
@@ -54,7 +57,8 @@ class Game {
         }
     }
 
-    addGameObject(gameObject) {
+    addGameObject(gameObject: GameObject) {
+        console.log("add:" + gameObject.id);
         gameObject.game = this;
         this.gameObjects.push(gameObject);
 
@@ -69,7 +73,9 @@ class Game {
         });
     }
 
-    removeGameObject(gameObject) {
+    removeGameObject(gameObject: GameObject) {
+        if (!gameObject) return;
+
         // if obj has a body then remove it from the world
         var goBody = gameObject.getComponent('body').body;
 
@@ -86,7 +92,7 @@ class Game {
         });
     }
 
-    getNetGameObjects(isFull) {
+    getNetGameObjects(isFull: boolean) {
         var go = [];
         var length = this.gameObjects.length;
 

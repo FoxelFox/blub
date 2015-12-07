@@ -5,8 +5,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var router = express.Router();
 var Controller = new require('./private/ControllerNew.js');
-console.log(Controller);
-var ctrl = new Controller.Controller(io);
+var ctrl = new Controller(io);
 
 router.use(express.static('public'));
 router.get('/', function(req, res) {

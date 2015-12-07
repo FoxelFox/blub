@@ -25,7 +25,8 @@ var GameObject = (function () {
     };
     GameObject.prototype.addComponents = function (comps) {
         comps = comps || [];
-        for (var comp in comps) {
+        for (var _i = 0; _i < comps.length; _i++) {
+            var comp = comps[_i];
             this.addComponent(comp);
         }
     };
@@ -50,7 +51,8 @@ var GameObject = (function () {
         }
     };
     GameObject.prototype.update = function () {
-        for (var comp in this.components.getComponents()) {
+        for (var _i = 0, _a = this.components.getComponents(); _i < _a.length; _i++) {
+            var comp = _a[_i];
             comp.update();
         }
     };
@@ -58,7 +60,8 @@ var GameObject = (function () {
         if (!this.isDirty && !isFull)
             return {};
         var netComponents = [];
-        for (var comp in this.components.getComponents()) {
+        for (var _i = 0, _a = this.components.getComponents(); _i < _a.length; _i++) {
+            var comp = _a[_i];
             if (comp.isDirty || isFull) {
                 var netAccu = {};
                 comp.toNet(netAccu, isFull);

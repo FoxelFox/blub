@@ -3,10 +3,13 @@ var ComponentMap = (function () {
         this.items = {};
     }
     ComponentMap.prototype.addComponent = function (component) {
+        if (!this.items[component.type])
+            this.items[component.type] = [];
         this.items[component.type].push(component);
     };
     ComponentMap.prototype.addComponents = function (components) {
-        for (var comp in components) {
+        for (var _i = 0; _i < components.length; _i++) {
+            var comp = components[_i];
             this.addComponent(comp);
         }
     };
@@ -22,7 +25,8 @@ var ComponentMap = (function () {
     ComponentMap.prototype.getComponents = function () {
         var result = [];
         for (var key in this.items) {
-            for (var comp in this.items[key]) {
+            for (var _i = 0, _a = this.items[key]; _i < _a.length; _i++) {
+                var comp = _a[_i];
                 result.push(comp);
             }
         }

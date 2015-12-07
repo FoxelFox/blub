@@ -1,14 +1,14 @@
 ﻿import Game = require('./GameNew');
 
-export class Controller {
+class Controller {
 
     game: Game = new Game();
 
-    constructor(io) {
+    constructor(io: SocketIO.Server) {
         this.socket(io);
     }
 
-    socket(io) {
+    socket(io: SocketIO.Server) {
         io.on('connection', (socket) => {
             // send players session id and all infos for preload
             socket.emit('player:load', this.createLoadPaket(socket.id));
@@ -37,7 +37,6 @@ export class Controller {
         setInterval(() => {
             this.game.update();
             io.emit('server:update', this.createUpdatePaket());
-
             this.game.sessionEvents.forEach((sEvent) => {
                 sEvent.socket.emit('game:spawn', sEvent.gameObjectID);
             });
@@ -74,3 +73,4 @@ export class Controller {
         });
     }
 }
+export = Controller;

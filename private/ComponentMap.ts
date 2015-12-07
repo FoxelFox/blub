@@ -9,11 +9,12 @@ class ComponentMap {
     }
 
     addComponent(component: component.Component): void {
+        if (!this.items[component.type]) this.items[component.type] = [];
         this.items[component.type].push(component);
     }
 
     addComponents(components: component.Component[]): void {
-        for (var comp in components) {
+        for (var comp of components) {
             this.addComponent(comp);
         }
     }
@@ -33,7 +34,7 @@ class ComponentMap {
     getComponents(): component.Component[] {
         var result: component.Component[] = [];
         for (var key in this.items) {
-            for (var comp in this.items[key]) {
+            for (var comp of this.items[key]) {
                 result.push(comp);
             }
         }

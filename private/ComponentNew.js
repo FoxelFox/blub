@@ -3,8 +3,10 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var p2 = require('p2');
 var Component = (function () {
     function Component(type) {
+        this.gameObject = null;
         this.isUnique = true;
         this.isDirty = true;
         this.type = type;
@@ -46,12 +48,14 @@ var Body = (function (_super) {
         this.body = new p2.Body(bodyOptions);
     }
     Body.prototype.onAdded = function () {
-        for (var shape in this.gameObject.getComponents("shape")) {
+        for (var _i = 0, _a = this.gameObject.getComponents("shape"); _i < _a.length; _i++) {
+            var shape = _a[_i];
             this.body.addShape(shape.shape, [shape.shape.position, shape.shape.angle]);
         }
     };
     Body.prototype.onRemoved = function () {
-        for (var shape in this.gameObject.getComponents("shape")) {
+        for (var _i = 0, _a = this.gameObject.getComponents("shape"); _i < _a.length; _i++) {
+            var shape = _a[_i];
             this.body.removeShape(shape.shape);
         }
     };

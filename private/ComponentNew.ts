@@ -1,8 +1,9 @@
-﻿import GameObject = require('./GameObjectNew');
+﻿import p2 = require('p2');
+import GameObject = require('./GameObjectNew');
 
 export class Component {
 
-    gameObject: GameObject;
+    gameObject: GameObject = null;
     type: string;
     isUnique: boolean = true;
     isDirty: boolean = true;
@@ -54,13 +55,13 @@ export class Body extends Component {
     }
 
     onAdded() {
-        for (var shape in this.gameObject.getComponents("shape")) {
+        for (var shape of this.gameObject.getComponents("shape")) {
             this.body.addShape(shape.shape, [shape.shape.position, shape.shape.angle]);
         }
     }
 
     onRemoved() {
-        for (var shape in this.gameObject.getComponents("shape")) {
+        for (var shape of this.gameObject.getComponents("shape")) {
             this.body.removeShape(shape.shape);
         }
     }

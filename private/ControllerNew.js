@@ -62,5 +62,5 @@ var Controller = (function () {
     };
     return Controller;
 })();
-exports.Controller = Controller;
+module.exports = Controller;
 //# sourceMappingURL=ControllerNew.js.map

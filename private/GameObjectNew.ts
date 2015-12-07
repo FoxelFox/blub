@@ -1,11 +1,13 @@
 ﻿import component = require('./ComponentNew');
 import ComponentMap = require('./ComponentMap');
+import Game = require('./GameNew');
 
 class GameObject {
 
     static nextID: number = 0;
 
     id: number;
+    game: Game;
     isDirty: boolean = true;
 
     private components: ComponentMap = new ComponentMap();
@@ -33,7 +35,7 @@ class GameObject {
 
     addComponents(comps: component.Component[]) {
         comps = comps || [];
-        for (var comp in comps) {
+        for (var comp of comps) {
             this.addComponent(comp);
         }
     }
@@ -61,7 +63,7 @@ class GameObject {
     }
 
     update() {
-        for (var comp in this.components.getComponents()) {
+        for (var comp of this.components.getComponents()) {
             comp.update();
         }
     }
@@ -69,7 +71,7 @@ class GameObject {
     toNet(isFull: boolean): Object {
         if (!this.isDirty && !isFull) return {};
         var netComponents = [];
-        for (var comp in this.components.getComponents()) {
+        for (var comp of this.components.getComponents()) {
             if (comp.isDirty || isFull) {
                 var netAccu = {};
                 comp.toNet(netAccu, isFull);

@@ -1,4 +1,5 @@
 var p2 = require('p2');
+var player = require('./asset/PlayerNew');
 var Game = (function () {
     function Game() {
         this.gameObjects = [];
@@ -8,26 +9,29 @@ var Game = (function () {
         this.world = new p2.World({
             gravity: [0.0, 0.0]
         });
+        // Game Startup code here...
+        console.log('start');
     }
     Game.prototype.update = function () {
-        for (var go in this.gameObjects) {
+        for (var _i = 0, _a = this.gameObjects; _i < _a.length; _i++) {
+            var go = _a[_i];
             go.update();
         }
         this.world.step(0.05);
     };
     Game.prototype.onPlayerConnected = function (socket) {
-        var player = player.instantiatePlayer({
-            sessionID: socket.id,
-            x: 0,
-            y: 0
-        });
+        console.log("connect:");
+        console.log("id:" + socket.id);
+        var id = socket.id;
+        var cPlayer = player.instantiate(id, 0, 0);
+        console.log("player:" + cPlayer);
         this.sessionEvents.push({
             name: 'spawn',
             socket: socket,
-            gameObjectID: player.id
+            gameObjectID: cPlayer.id
         });
-        this.players[socket.id] = player;
-        this.addGameObject(player);
+        this.players[socket.id] = cPlayer;
+        this.addGameObject(cPlayer);
     };
     Game.prototype.onPlayerDisconnected = function (sessionID) {
         var go = this.players[sessionID];
@@ -41,6 +45,7 @@ var Game = (function () {
         }
     };
     Game.prototype.addGameObject = function (gameObject) {
+        console.log("add:" + gameObject.id);
         gameObject.game = this;
         this.gameObjects.push(gameObject);
         // if obj has a body then add it to the world
@@ -53,6 +58,8 @@ var Game = (function () {
         });
     };
     Game.prototype.removeGameObject = function (gameObject) {
+        if (!gameObject)
+            return;
         // if obj has a body then remove it from the world
         var goBody = gameObject.getComponent('body').body;
         if (goBody)

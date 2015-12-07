@@ -1,4 +1,5 @@
-﻿import GameObject = require('./../GameObjectNew');
+﻿import p2 = require('p2');
+import GameObject = require('./../GameObjectNew');
 import component = require('./../ComponentNew');
 
 export class Player extends component.Component {
@@ -49,18 +50,18 @@ export class Player extends component.Component {
 
 /**
  * Instantiate a new Player gameObject
- * @param {String} [options.sessionID] Players unique session id
- * @param {Number} [options.x] Players spawn position x
- * @param {Number} [options.y] Players spawn position y
+ * @param {String} sessionID Players unique session id
+ * @param {Number} x Players spawn position x
+ * @param {Number} y Players spawn position y
  */
-export function instantiate(options) {
+export function instantiate(sessionID: string, x: number, y: number) {
     return new GameObject([
-        new Player(options.sessionID),
+        new Player(sessionID),
         new component.Model('player'),
         new component.CircleShape(1, [0, 0], 0),
         new component.Body({
             mass: 5,
-            position: [options.x, options.y],
+            position: [x, y],
             damping: 0.99
         })
     ]);

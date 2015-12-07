@@ -3,6 +3,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var p2 = require('p2');
 var GameObject = require('./../GameObjectNew');
 var component = require('./../ComponentNew');
 var Player = (function (_super) {
@@ -46,18 +47,18 @@ var Player = (function (_super) {
 exports.Player = Player;
 /**
  * Instantiate a new Player gameObject
- * @param {String} [options.sessionID] Players unique session id
- * @param {Number} [options.x] Players spawn position x
- * @param {Number} [options.y] Players spawn position y
+ * @param {String} sessionID Players unique session id
+ * @param {Number} x Players spawn position x
+ * @param {Number} y Players spawn position y
  */
-function instantiate(options) {
+function instantiate(sessionID, x, y) {
     return new GameObject([
-        new Player(options.sessionID),
+        new Player(sessionID),
         new component.Model('player'),
         new component.CircleShape(1, [0, 0], 0),
         new component.Body({
             mass: 5,
-            position: [options.x, options.y],
+            position: [x, y],
             damping: 0.99
         })
     ]);

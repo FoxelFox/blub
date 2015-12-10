@@ -6,8 +6,8 @@
     <ProjectGuid>{3415ef19-946b-416e-9136-2440c30e3a89}</ProjectGuid>
     <ProjectHome />
     <ProjectView>ProjectFiles</ProjectView>
-    <StartupFile>main.js</StartupFile>
-    <WorkingDirectory>.</WorkingDirectory>
+    <StartupFile>./publish/main.js</StartupFile>
+    <WorkingDirectory>./publish/</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -21,27 +21,41 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="publish\main.js" />
+    <Compile Include="publish\private\asset\PlayerNew.js" />
+    <Compile Include="publish\private\asset\PlayfieldNew.js" />
+    <Compile Include="publish\private\ComponentMap.js" />
+    <Compile Include="publish\private\ComponentNew.js" />
+    <Compile Include="publish\private\ControllerNew.js" />
+    <Compile Include="publish\private\GameNew.js" />
+    <Compile Include="publish\private\GameObjectNew.js" />
     <Content Include="package.json" />
+    <Content Include="publish\main.js.map" />
+    <Content Include="publish\private\asset\PlayerNew.js.map" />
+    <Content Include="publish\private\asset\PlayfieldNew.js.map" />
+    <Content Include="publish\private\ComponentMap.js.map" />
+    <Content Include="publish\private\ComponentNew.js.map" />
+    <Content Include="publish\private\ControllerNew.js.map" />
+    <Content Include="publish\private\GameNew.js.map" />
+    <Content Include="publish\private\GameObjectNew.js.map" />
     <Content Include="README.md" />
-    <Compile Include="main.js" />
-    <Compile Include="public\js\input.js" />
-    <Compile Include="test\Player.js" />
+    <Content Include="publish\public\js\input.js" />
     <Compile Include="private\asset\building\MainBase.js" />
-    <Content Include="public\css\style.css" />
-    <Content Include="public\html\chat.html" />
-    <Content Include="public\html\index.html" />
-    <Content Include="public\img\grid.png" />
-    <Content Include="public\img\test.jpg" />
-    <Compile Include="public\js\chat.js" />
-    <Compile Include="public\js\game.js" />
-    <Compile Include="public\js\index.js" />
-    <Compile Include="public\js\sockets.js" />
-    <Content Include="public\model\player.json" />
-    <Compile Include="public\ext-lib\js\bytebuffer.min.js" />
-    <Compile Include="public\ext-lib\js\keyboard.min.js" />
-    <Compile Include="public\ext-lib\js\p2.js" />
-    <Compile Include="public\ext-lib\js\protobuf.min.js" />
-    <Compile Include="public\ext-lib\js\three.js" />
+    <Content Include="publish\public\css\style.css" />
+    <Content Include="publish\public\html\chat.html" />
+    <Content Include="publish\public\html\index.html" />
+    <Content Include="publish\public\img\grid.png" />
+    <Content Include="publish\public\img\test.jpg" />
+    <Content Include="publish\public\js\chat.js" />
+    <Content Include="publish\public\js\game.js" />
+    <Content Include="publish\public\js\index.js" />
+    <Content Include="publish\public\js\sockets.js" />
+    <Content Include="publish\public\model\player.json" />
+    <Content Include="publish\public\ext-lib\js\bytebuffer.min.js" />
+    <Content Include="publish\public\ext-lib\js\keyboard.min.js" />
+    <Content Include="publish\public\ext-lib\js\p2.js" />
+    <Content Include="publish\public\ext-lib\js\protobuf.min.js" />
+    <Content Include="publish\public\ext-lib\js\three.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="blend" />
@@ -49,21 +63,25 @@
     <Folder Include="private\asset" />
     <Folder Include="private\asset\building" />
     <Folder Include="public" />
-    <Folder Include="public\css" />
-    <Folder Include="public\ext-lib" />
-    <Folder Include="public\ext-lib\js" />
-    <Folder Include="public\html" />
-    <Folder Include="public\img" />
-    <Folder Include="public\js" />
-    <Folder Include="public\model" />
-    <Folder Include="public\shared" />
-    <Folder Include="test" />
+    <Folder Include="publish\public\css\" />
+    <Folder Include="publish\public\ext-lib\" />
+    <Folder Include="publish\public\ext-lib\js\" />
+    <Folder Include="publish\public\html\" />
+    <Folder Include="publish\public\img\" />
+    <Folder Include="publish\public\js\" />
+    <Folder Include="publish\public\model\" />
+    <Folder Include="publish\public\shared\" />
+    <Folder Include="publish\" />
+    <Folder Include="publish\public\" />
+    <Folder Include="publish\private\" />
+    <Folder Include="publish\private\asset\" />
     <Folder Include="typings\" />
     <Folder Include="typings\socket.io\" />
     <Folder Include="typings\node\" />
     <Folder Include="typings\p2\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="main.ts" />
     <TypeScriptCompile Include="private\asset\PlayerNew.ts" />
     <TypeScriptCompile Include="private\asset\PlayfieldNew.ts" />
     <TypeScriptCompile Include="private\ComponentMap.ts" />
@@ -80,12 +98,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>
+    </TypeScriptOutFile>
+    <TypeScriptOutDir>./publish</TypeScriptOutDir>
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>False</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
     <TypeScriptOutFile />
-    <TypeScriptOutDir />
+    <TypeScriptOutDir>./publish</TypeScriptOutDir>
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
     <TypeScriptMapRoot />

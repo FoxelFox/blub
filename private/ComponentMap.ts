@@ -25,6 +25,7 @@ class ComponentMap {
 
     get(type: string): component.Component[] {
         return this.items[type];
+
     }
 
     getFirst(type: string): component.Component {

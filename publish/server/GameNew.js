@@ -10,7 +10,6 @@ var Game = (function () {
             gravity: [0.0, 0.0]
         });
         // Game Startup code here...
-        console.log('start');
     }
     Game.prototype.update = function () {
         for (var _i = 0, _a = this.gameObjects; _i < _a.length; _i++) {
@@ -20,11 +19,8 @@ var Game = (function () {
         this.world.step(0.05);
     };
     Game.prototype.onPlayerConnected = function (socket) {
-        console.log("connect:");
-        console.log("id:" + socket.id);
         var id = socket.id;
         var cPlayer = player.instantiate(id, 0, 0);
-        console.log("player:" + cPlayer);
         this.sessionEvents.push({
             name: 'spawn',
             socket: socket,
@@ -45,7 +41,6 @@ var Game = (function () {
         }
     };
     Game.prototype.addGameObject = function (gameObject) {
-        console.log("add:" + gameObject.id);
         gameObject.game = this;
         this.gameObjects.push(gameObject);
         // if obj has a body then add it to the world

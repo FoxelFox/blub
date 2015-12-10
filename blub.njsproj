@@ -22,50 +22,29 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Compile Include="publish\main.js" />
-    <Compile Include="publish\private\asset\PlayerNew.js" />
-    <Compile Include="publish\private\asset\PlayfieldNew.js" />
-    <Compile Include="publish\private\ComponentMap.js" />
-    <Compile Include="publish\private\ComponentNew.js" />
-    <Compile Include="publish\private\ControllerNew.js" />
-    <Compile Include="publish\private\GameNew.js" />
-    <Compile Include="publish\private\GameObjectNew.js" />
     <Content Include="package.json" />
     <Content Include="publish\main.js.map" />
-    <Content Include="publish\private\asset\PlayerNew.js.map" />
-    <Content Include="publish\private\asset\PlayfieldNew.js.map" />
-    <Content Include="publish\private\ComponentMap.js.map" />
-    <Content Include="publish\private\ComponentNew.js.map" />
-    <Content Include="publish\private\ControllerNew.js.map" />
-    <Content Include="publish\private\GameNew.js.map" />
-    <Content Include="publish\private\GameObjectNew.js.map" />
     <Content Include="README.md" />
-    <Content Include="publish\public\js\input.js" />
-    <Compile Include="private\asset\building\MainBase.js" />
+    <Content Include="client\js\input.ts" />
+    <Compile Include="server\asset\building\MainBase.js" />
     <Content Include="publish\public\css\style.css" />
     <Content Include="publish\public\html\chat.html" />
     <Content Include="publish\public\html\index.html" />
     <Content Include="publish\public\img\grid.png" />
     <Content Include="publish\public\img\test.jpg" />
-    <Content Include="publish\public\js\chat.js" />
-    <Content Include="publish\public\js\game.js" />
-    <Content Include="publish\public\js\index.js" />
-    <Content Include="publish\public\js\sockets.js" />
+    <Content Include="client\js\chat.ts" />
+    <Content Include="client\js\game.ts" />
+    <Content Include="client\js\index.ts" />
+    <Content Include="client\js\sockets.ts" />
     <Content Include="publish\public\model\player.json" />
-    <Content Include="publish\public\ext-lib\js\bytebuffer.min.js" />
-    <Content Include="publish\public\ext-lib\js\keyboard.min.js" />
-    <Content Include="publish\public\ext-lib\js\p2.js" />
-    <Content Include="publish\public\ext-lib\js\protobuf.min.js" />
-    <Content Include="publish\public\ext-lib\js\three.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="blend" />
-    <Folder Include="private" />
-    <Folder Include="private\asset" />
-    <Folder Include="private\asset\building" />
-    <Folder Include="public" />
+    <Folder Include="server\" />
+    <Folder Include="server\asset\" />
+    <Folder Include="server\asset\building\" />
+    <Folder Include="client\" />
+    <Folder Include="client\js\" />
     <Folder Include="publish\public\css\" />
-    <Folder Include="publish\public\ext-lib\" />
-    <Folder Include="publish\public\ext-lib\js\" />
     <Folder Include="publish\public\html\" />
     <Folder Include="publish\public\img\" />
     <Folder Include="publish\public\js\" />
@@ -73,8 +52,6 @@
     <Folder Include="publish\public\shared\" />
     <Folder Include="publish\" />
     <Folder Include="publish\public\" />
-    <Folder Include="publish\private\" />
-    <Folder Include="publish\private\asset\" />
     <Folder Include="typings\" />
     <Folder Include="typings\socket.io\" />
     <Folder Include="typings\node\" />
@@ -82,13 +59,13 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="main.ts" />
-    <TypeScriptCompile Include="private\asset\PlayerNew.ts" />
-    <TypeScriptCompile Include="private\asset\PlayfieldNew.ts" />
-    <TypeScriptCompile Include="private\ComponentMap.ts" />
-    <TypeScriptCompile Include="private\ComponentNew.ts" />
-    <TypeScriptCompile Include="private\ControllerNew.ts" />
-    <TypeScriptCompile Include="private\GameNew.ts" />
-    <TypeScriptCompile Include="private\GameObjectNew.ts" />
+    <TypeScriptCompile Include="server\asset\PlayerNew.ts" />
+    <TypeScriptCompile Include="server\asset\PlayfieldNew.ts" />
+    <TypeScriptCompile Include="server\ComponentMap.ts" />
+    <TypeScriptCompile Include="server\ComponentNew.ts" />
+    <TypeScriptCompile Include="server\ControllerNew.ts" />
+    <TypeScriptCompile Include="server\GameNew.ts" />
+    <TypeScriptCompile Include="server\GameObjectNew.ts" />
     <TypeScriptCompile Include="typings\node\node.d.ts" />
     <TypeScriptCompile Include="typings\p2\p2.d.ts" />
     <TypeScriptCompile Include="typings\socket.io\socket.io.d.ts" />

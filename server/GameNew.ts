@@ -15,7 +15,6 @@ class Game {
 
     constructor() {
         // Game Startup code here...
-        console.log('start');
     }
 
     update() {
@@ -26,13 +25,8 @@ class Game {
     }
 
     onPlayerConnected(socket: SocketIO.Socket) {
-        console.log("connect:");
-        console.log("id:" + socket.id);
-
         var id: string = socket.id;
         var cPlayer = player.instantiate(id, 0, 0);
-
-        console.log("player:" + cPlayer);
 
         this.sessionEvents.push({
             name: 'spawn',
@@ -58,7 +52,6 @@ class Game {
     }
 
     addGameObject(gameObject: GameObject) {
-        console.log("add:" + gameObject.id);
         gameObject.game = this;
         this.gameObjects.push(gameObject);
 

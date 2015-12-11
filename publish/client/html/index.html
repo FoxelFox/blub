@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>blub</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- script references -->
+	</head>
+
+	<body>
+        hallo!
+		<div id="viewport"></div>
+		<div ng-app="App" ng-controller="indexController as ic">
+			<ng-include src="'html/chat.html'"></ng-include>
+		</div>
+
+		<script src="js/app.js"></script>
+
+	</body>
+</html>

@@ -1,0 +1,18 @@
+syntax = "proto3";
+package event;
+
+message Event {
+	required EventType type = 1;
+	oneof event_data {
+		GoDelete goDelete = 2;
+	}
+}
+
+enum EventType {
+	GO_DELETE = 0;
+}
+
+// Event Data Messages
+message GoDelete {
+	required uint32 goID = 1;
+}

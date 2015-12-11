@@ -1,0 +1,8 @@
+syntax = "proto3";
+package gameObject;
+import "Component.proto";
+
+message GameObject {
+    required uint32 id = 1;
+    repeated component.Component components = 2;
+}

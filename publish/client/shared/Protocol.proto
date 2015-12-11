@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "GameObject.proto";
+import "Event.proto";
+
+message Load {
+	required string sessionID = 1;
+	repeated string models = 2;
+}
+
+message Join {
+	repeated gameObject.GameObject gos = 1;
+}
+
+message Update {
+	repeated gameObject.GameObject gos = 1;
+	repeated event.Event globalEvents = 2;
+}

@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3415ef19-946b-416e-9136-2440c30e3a89}</ProjectGuid>
     <ProjectHome />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>./publish/main.js</StartupFile>
     <WorkingDirectory>./publish/</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -25,18 +25,18 @@
     <Content Include="package.json" />
     <Content Include="publish\main.js.map" />
     <Content Include="README.md" />
-    <Content Include="client\js\input.ts" />
+    <TypeScriptCompile Include="client\js\input.ts" />
     <Compile Include="server\asset\building\MainBase.js" />
-    <Content Include="publish\public\css\style.css" />
-    <Content Include="publish\public\html\chat.html" />
-    <Content Include="publish\public\html\index.html" />
-    <Content Include="publish\public\img\grid.png" />
-    <Content Include="publish\public\img\test.jpg" />
-    <Content Include="client\js\chat.ts" />
-    <Content Include="client\js\game.ts" />
-    <Content Include="client\js\index.ts" />
-    <Content Include="client\js\sockets.ts" />
-    <Content Include="publish\public\model\player.json" />
+    <Content Include="publish\client\css\style.css" />
+    <Content Include="publish\client\html\chat.html" />
+    <Content Include="publish\client\html\index.html" />
+    <Content Include="publish\client\img\grid.png" />
+    <Content Include="publish\client\img\test.jpg" />
+    <TypeScriptCompile Include="client\js\game.ts" />
+    <TypeScriptCompile Include="client\js\index.ts">
+      <Publish>True</Publish>
+    </TypeScriptCompile>
+    <Content Include="publish\client\model\player.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="server\" />
@@ -44,15 +44,23 @@
     <Folder Include="server\asset\building\" />
     <Folder Include="client\" />
     <Folder Include="client\js\" />
-    <Folder Include="publish\public\css\" />
-    <Folder Include="publish\public\html\" />
-    <Folder Include="publish\public\img\" />
-    <Folder Include="publish\public\js\" />
-    <Folder Include="publish\public\model\" />
-    <Folder Include="publish\public\shared\" />
+    <Folder Include="publish\client\css\" />
+    <Folder Include="publish\client\html\" />
+    <Folder Include="publish\client\img\" />
+    <Folder Include="publish\client\js\" />
+    <Folder Include="publish\client\model\" />
+    <Folder Include="publish\client\shared\" />
     <Folder Include="publish\" />
-    <Folder Include="publish\public\" />
+    <Folder Include="publish\client\" />
     <Folder Include="typings\" />
+    <Folder Include="typings\angular\" />
+    <Folder Include="typings\express\" />
+    <Folder Include="typings\jquery\" />
+    <Folder Include="typings\keyboardjs\" />
+    <Folder Include="typings\mime\" />
+    <Folder Include="typings\serve-static\" />
+    <Folder Include="typings\socket.io-client\" />
+    <Folder Include="typings\three\" />
     <Folder Include="typings\socket.io\" />
     <Folder Include="typings\node\" />
     <Folder Include="typings\p2\" />
@@ -66,9 +74,17 @@
     <TypeScriptCompile Include="server\ControllerNew.ts" />
     <TypeScriptCompile Include="server\GameNew.ts" />
     <TypeScriptCompile Include="server\GameObjectNew.ts" />
+    <TypeScriptCompile Include="typings\angular\angular.d.ts" />
+    <TypeScriptCompile Include="typings\express\express.d.ts" />
+    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="typings\keyboardjs\keyboardjs.d.ts" />
+    <TypeScriptCompile Include="typings\mime\mime.d.ts" />
     <TypeScriptCompile Include="typings\node\node.d.ts" />
     <TypeScriptCompile Include="typings\p2\p2.d.ts" />
+    <TypeScriptCompile Include="typings\serve-static\serve-static.d.ts" />
+    <TypeScriptCompile Include="typings\socket.io-client\socket.io-client.d.ts" />
     <TypeScriptCompile Include="typings\socket.io\socket.io.d.ts" />
+    <TypeScriptCompile Include="typings\three\three.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

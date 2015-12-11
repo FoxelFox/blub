@@ -1,4 +1,7 @@
-﻿// local user input as globaly accessable instance
+﻿import keyboardJS = require('keyboardjs');
+import THREE = require('three');
+
+// local user input as globaly accessable instance
 var Input = new function () {
     var self = this;
     self.up = false,
@@ -10,25 +13,26 @@ var Input = new function () {
         rel: [0, 0],                // relative position
         abs: [0, 0]                 // absolute position
     };
-                           
+
     keyboardJS.bind('w', function (e) {
         self.up = true;
+        
     }, function (e) {
         self.up = false;
     });
-    
+
     keyboardJS.bind('s', function (e) {
         self.down = true;
     }, function (e) {
         self.down = false;
     });
-    
+
     keyboardJS.bind('a', function (e) {
         self.left = true;
     }, function (e) {
         Input.left = false;
     });
-    
+
     keyboardJS.bind('d', function (e) {
         self.right = true;
     }, function (e) {
@@ -62,3 +66,4 @@ var Input = new function () {
     window.onmousedown = self.onMouseDown;
     window.onmouseup = self.onmouseup;
 }
+export = Input;
